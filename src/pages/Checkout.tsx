@@ -56,11 +56,11 @@ const Checkout = () => {
 
   const defaultAddress: Address = {
     id: "default",
-    company: "Storefront #1",
-    line1: "416 N Ida Ave",
-    city: "Bozeman",
+    company: "Mountain Hardware Store",
+    line1: "1842 Pine Ridge Road",
+    city: "Whitefish",
     state: "MT",
-    zip: "59715",
+    zip: "59937",
     country: "USA",
     isDefault: true
   };
@@ -81,11 +81,11 @@ const Checkout = () => {
         
         if (!user) {
           setUserProfile({
-            first_name: "Test",
-            last_name: "User",
-            phone: "555-123-4567",
-            address: "123 Demo St",
-            email: "test@example.com"
+            first_name: "Example",
+            last_name: "Customer",
+            phone: "406-555-8901",
+            address: "1842 Pine Ridge Road",
+            email: "customer@example.com"
           });
           return;
         }
@@ -98,11 +98,11 @@ const Checkout = () => {
 
         if (error) {
           setUserProfile({
-            first_name: data?.first_name || "Test",
-            last_name: data?.last_name || "User",
-            phone: data?.phone || "555-123-4567",
-            address: data?.address || "123 Demo St",
-            email: user.email || "test@example.com"
+            first_name: data?.first_name || "Example",
+            last_name: data?.last_name || "Customer",
+            phone: data?.phone || "406-555-8901",
+            address: data?.address || "1842 Pine Ridge Road",
+            email: user.email || "customer@example.com"
           });
           return;
         }
@@ -117,11 +117,11 @@ const Checkout = () => {
       } catch (error) {
         console.error("Error fetching user profile:", error);
         setUserProfile({
-          first_name: "Test",
-          last_name: "User",
-          phone: "555-123-4567",
-          address: "123 Demo St",
-          email: "test@example.com"
+          first_name: "Example",
+          last_name: "Customer",
+          phone: "406-555-8901",
+          address: "1842 Pine Ridge Road",
+          email: "customer@example.com"
         });
       }
     };
