@@ -18,7 +18,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         <img
           src={product.image}
           alt={product.name}
-          className="product-image animate-blur-in"
+          className="product-image animate-blur-in h-full w-full object-cover"
           loading="lazy"
         />
         {product.featured && (
