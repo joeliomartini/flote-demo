@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -130,6 +129,13 @@
 
   .badge-pulse {
     @apply absolute -top-1 -right-1 animate-[pulse-badge_2s_ease-in-out_infinite];
+  }
+
+  /* Radio button styles */
+  .RadioGroupItem {
+    height: 16px;
+    width: 16px;
+    flex-shrink: 0;
   }
 
   /* Glass morphism effect */
