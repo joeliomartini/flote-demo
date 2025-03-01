@@ -1,8 +1,7 @@
-
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "../data/products";
-import { fetchProducts } from "../services/productService";
+import { fetchProducts, migrateProductsToSupabase } from "../services/productService";
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
 import CartDrawer from "../components/CartDrawer";
@@ -20,10 +19,29 @@ const Index = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // Fetch products from Supabase
-  const { data: products = [], isLoading, error } = useQuery({
+  const { data: products = [], isLoading, error, refetch } = useQuery({
     queryKey: ['products'],
     queryFn: fetchProducts,
   });
+
+  // Run migration on component mount
+  useEffect(() => {
+    const runMigration = async () => {
+      try {
+        const migrationResult = await migrateProductsToSupabase();
+        if (migrationResult) {
+          toast.success("Products successfully migrated to database!");
+          // Refetch products after migration
+          refetch();
+        }
+      } catch (err) {
+        console.error("Migration error:", err);
+        toast.error("Failed to migrate products to database.");
+      }
+    };
+    
+    runMigration();
+  }, [refetch]);
 
   // Show error toast if fetch fails
   React.useEffect(() => {
