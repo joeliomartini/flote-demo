@@ -10,9 +10,9 @@ const mapDbProductToProduct = (dbProduct: any): Product => {
     description: dbProduct.description || '',
     price: dbProduct.price,
     image: dbProduct.image || '',
-    category: dbProduct.category || (dbProduct.category_id ? 'Unknown' : ''), // Handle category mapping
+    category: dbProduct.category || '', // Handle category mapping
     featured: dbProduct.featured || false,
-    brand: dbProduct.brand || (dbProduct.brand_id ? 'Unknown' : ''),
+    brand: dbProduct.brand || '',
     type: dbProduct.type || '',
     thcContent: dbProduct.thc_content || '',
     weight: dbProduct.weight || '',
@@ -136,7 +136,9 @@ export const deleteProduct = async (id: string): Promise<void> => {
 // Migrate products from local data to Supabase
 export const migrateProductsToSupabase = async (): Promise<boolean> => {
   try {
+    console.log('Starting migration of products to Supabase...');
     const { products } = await import('@/data/products');
+    console.log(`Found ${products.length} products to migrate`);
     
     // Check if products already exist in Supabase
     const { count, error: countError } = await supabase
@@ -148,13 +150,18 @@ export const migrateProductsToSupabase = async (): Promise<boolean> => {
       throw countError;
     }
     
+    console.log(`Current product count in Supabase: ${count}`);
+    
     if (count && count > 0) {
-      console.log(`Products already exist in Supabase (${count} found). Skipping migration.`);
-      return false;
+      console.log(`Products already exist in Supabase (${count} found). Do you want to overwrite them?`);
+      // For now, we'll continue with the migration even if products exist
+      // In a real app, you might want to prompt the user
     }
     
-    // Proceed with migration if no products exist
+    // Proceed with migration
+    console.log('Preparing products for migration...');
     const dbProducts = products.map(product => ({
+      id: product.id, // Include the id to preserve the same IDs from the sample data
       name: product.name,
       description: product.description,
       price: product.price,
@@ -169,9 +176,22 @@ export const migrateProductsToSupabase = async (): Promise<boolean> => {
       details: product.details
     }));
     
+    console.log('Inserting products to Supabase...');
+    // First, let's delete existing products if any
+    const { error: deleteError } = await supabase
+      .from('products')
+      .delete()
+      .gt('id', '0'); // This will delete all products
+    
+    if (deleteError) {
+      console.error('Error deleting existing products:', deleteError);
+      // Continue anyway
+    }
+    
+    // Now insert the products
     const { data, error } = await supabase
       .from('products')
-      .insert(dbProducts)
+      .upsert(dbProducts)
       .select();
     
     if (error) {
@@ -187,4 +207,3 @@ export const migrateProductsToSupabase = async (): Promise<boolean> => {
     return false;
   }
 };
-

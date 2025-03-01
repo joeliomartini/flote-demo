@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "../data/products";
@@ -28,11 +29,14 @@ const Index = () => {
   useEffect(() => {
     const runMigration = async () => {
       try {
+        console.log("Attempting to migrate products...");
         const migrationResult = await migrateProductsToSupabase();
         if (migrationResult) {
           toast.success("Products successfully migrated to database!");
           // Refetch products after migration
           refetch();
+        } else {
+          toast.error("Failed to migrate products to database. Check console for details.");
         }
       } catch (err) {
         console.error("Migration error:", err);
