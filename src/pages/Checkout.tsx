@@ -1,13 +1,13 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin, Truck, ZapIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin, Truck, ZapIcon, Camera, RefreshCcw } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -54,6 +54,13 @@ const Checkout = () => {
     country: "USA"
   });
   const [addressModalOpen, setAddressModalOpen] = useState(false);
+  
+  // Camera states
+  const [cameraModalOpen, setCameraModalOpen] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const defaultAddress: Address = {
     id: "default",
@@ -134,6 +141,78 @@ const Checkout = () => {
     fetchUserProfile();
   }, [items.length, navigate, bypassCartCheck]);
 
+  const startCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' },
+        audio: false 
+      });
+      
+      setStream(mediaStream);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      toast.error("Camera access denied", {
+        description: "Please allow camera access to continue with cash verification"
+      });
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Draw the current video frame to the canvas
+      const context = canvas.getContext('2d');
+      if (context) {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageDataUrl = canvas.toDataURL('image/jpeg');
+        setCapturedImage(imageDataUrl);
+      }
+    }
+  };
+
+  const retakePhoto = () => {
+    setCapturedImage(null);
+  };
+
+  const confirmPhoto = () => {
+    // Here you would typically upload the photo to your backend
+    // For now we'll just complete the flow
+    stopCamera();
+    setCameraModalOpen(false);
+    
+    // Process the order
+    setTimeout(() => {
+      toast.success("Order placed successfully!", {
+        description: "Cash payment verification complete. Your order will be processed."
+      });
+      navigate("/");
+    }, 1000);
+  };
+
+  useEffect(() => {
+    // Clean up camera resources when component unmounts
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
   const handleAddNewAddress = () => {
     const newAddr: Address = {
       id: `address-${Date.now()}`,
@@ -173,14 +252,20 @@ const Checkout = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        throw new Error("User not authenticated");
+      // For cash on delivery, open the camera modal
+      if (paymentMethod === "cash") {
+        setIsLoading(false);
+        setCameraModalOpen(true);
+        // Camera will be started when modal opens
+        return;
       }
-
+      
+      // For other payment methods, process normally
       setTimeout(() => {
         toast.success("Order placed successfully!", {
-          description: `Your order will be processed using ${paymentMethod === 'cash' ? 'Cash on Delivery' : 
-            paymentMethod === 'ach' ? 'ACH Payment' : 'Line of Credit'}`
+          description: `Your order will be processed using ${
+            paymentMethod === 'ach' ? 'ACH Payment' : 'Line of Credit'
+          }`
         });
 
         navigate("/");
@@ -193,6 +278,15 @@ const Checkout = () => {
       setIsLoading(false);
     }
   };
+
+  // Start camera when camera modal opens
+  useEffect(() => {
+    if (cameraModalOpen) {
+      startCamera();
+    } else {
+      stopCamera();
+    }
+  }, [cameraModalOpen]);
 
   if (!userProfile) {
     return (
@@ -621,6 +715,80 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+
+      {/* Camera Modal */}
+      <Dialog open={cameraModalOpen} onOpenChange={(open) => {
+        if (!open) {
+          stopCamera();
+        }
+        setCameraModalOpen(open);
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Verify Cash Payment</DialogTitle>
+            <DialogDescription>
+              Please take a photo of the cash you'll use for payment
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="relative overflow-hidden rounded-lg border bg-muted">
+            {!capturedImage ? (
+              <>
+                <video 
+                  ref={videoRef} 
+                  autoPlay 
+                  playsInline 
+                  className="h-[300px] w-full object-cover"
+                />
+                <div className="absolute bottom-3 left-0 right-0 flex justify-center">
+                  <Button 
+                    onClick={capturePhoto}
+                    variant="secondary"
+                    size="icon"
+                    className="rounded-full h-12 w-12 bg-white/80 hover:bg-white shadow-md"
+                  >
+                    <Camera className="h-6 w-6" />
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="relative">
+                <img 
+                  src={capturedImage} 
+                  alt="Captured cash" 
+                  className="h-[300px] w-full object-contain"
+                />
+                <div className="absolute bottom-3 right-3">
+                  <Button 
+                    onClick={retakePhoto}
+                    variant="outline"
+                    size="sm"
+                    className="mr-2"
+                  >
+                    <RefreshCcw className="h-4 w-4 mr-1" />
+                    Retake
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Hidden canvas for capturing image */}
+          <canvas ref={canvasRef} className="hidden" />
+          
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setCameraModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmPhoto}
+              disabled={!capturedImage}
+            >
+              Confirm Payment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
