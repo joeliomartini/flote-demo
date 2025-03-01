@@ -11,6 +11,7 @@ import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface UserProfile {
   first_name?: string;
@@ -22,6 +23,7 @@ interface UserProfile {
 
 interface Address {
   id: string;
+  company?: string;
   line1: string;
   line2?: string;
   city: string;
@@ -42,6 +44,7 @@ const Checkout = () => {
   const [bypassCartCheck] = useState(location.state?.bypassCheck || true);
   const [selectedAddress, setSelectedAddress] = useState<string>("default");
   const [newAddress, setNewAddress] = useState({
+    company: "",
     line1: "",
     line2: "",
     city: "",
@@ -53,6 +56,7 @@ const Checkout = () => {
 
   const defaultAddress: Address = {
     id: "default",
+    company: "Storefront #1",
     line1: "416 N Ida Ave",
     city: "Bozeman",
     state: "MT",
@@ -128,6 +132,7 @@ const Checkout = () => {
   const handleAddNewAddress = () => {
     const newAddr: Address = {
       id: `address-${Date.now()}`,
+      company: newAddress.company,
       line1: newAddress.line1,
       line2: newAddress.line2,
       city: newAddress.city,
@@ -142,6 +147,7 @@ const Checkout = () => {
     setAddressModalOpen(false);
     
     setNewAddress({
+      company: "",
       line1: "",
       line2: "",
       city: "",
@@ -257,13 +263,22 @@ const Checkout = () => {
                         </div>
                         <div className="flex-1 pr-8">
                           <div className="font-medium">
-                            {address.isDefault && <span className="inline-block bg-primary/10 text-xs rounded px-2 py-0.5 mr-2">Default</span>}
+                            {address.isDefault && (
+                              <Badge variant="outline" className="bg-gray-100 text-xs rounded px-2 py-0.5 mr-2 text-muted-foreground font-normal">
+                                Default
+                              </Badge>
+                            )}
                           </div>
-                          <div className="text-sm text-muted-foreground">
-                            {address.line1}
-                            {address.line2 && `, ${address.line2}`}
-                            <br />
-                            {address.city}, {address.state} {address.zip}
+                          <div>
+                            {address.company && (
+                              <div className="text-sm text-muted-foreground">{address.company}</div>
+                            )}
+                            <div className="text-sm text-muted-foreground">
+                              {address.line1}
+                              {address.line2 && `, ${address.line2}`}
+                              <br />
+                              {address.city}, {address.state} {address.zip}
+                            </div>
                           </div>
                         </div>
                       </label>
@@ -289,6 +304,16 @@ const Checkout = () => {
                       </DialogHeader>
                       
                       <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="company">Company Name (optional)</Label>
+                          <Input 
+                            id="company" 
+                            placeholder="Acme Inc." 
+                            value={newAddress.company || ""}
+                            onChange={(e) => setNewAddress({...newAddress, company: e.target.value})}
+                          />
+                        </div>
+                        
                         <div className="grid gap-2">
                           <Label htmlFor="street">Street Address</Label>
                           <Input 
