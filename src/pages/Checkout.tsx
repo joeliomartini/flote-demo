@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface UserProfile {
   first_name?: string;
@@ -16,6 +19,17 @@ interface UserProfile {
   phone?: string;
   address?: string;
   email: string;
+}
+
+interface Address {
+  id: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+  isDefault: boolean;
 }
 
 const Checkout = () => {
@@ -26,6 +40,29 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("cash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [bypassCartCheck] = useState(location.state?.bypassCheck || true);
+  const [selectedAddress, setSelectedAddress] = useState<string>("default");
+  const [newAddress, setNewAddress] = useState({
+    line1: "",
+    line2: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "USA"
+  });
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+
+  // Default address for demo purposes
+  const defaultAddress: Address = {
+    id: "default",
+    line1: "416 N Ida Ave",
+    city: "Bozeman",
+    state: "MT",
+    zip: "59715",
+    country: "USA",
+    isDefault: true
+  };
+
+  const [addresses, setAddresses] = useState<Address[]>([defaultAddress]);
 
   useEffect(() => {
     if (items.length === 0 && !bypassCartCheck) {
@@ -88,6 +125,37 @@ const Checkout = () => {
 
     fetchUserProfile();
   }, [items.length, navigate, bypassCartCheck]);
+
+  const handleAddNewAddress = () => {
+    const newAddr: Address = {
+      id: `address-${Date.now()}`,
+      line1: newAddress.line1,
+      line2: newAddress.line2,
+      city: newAddress.city,
+      state: newAddress.state,
+      zip: newAddress.zip,
+      country: newAddress.country,
+      isDefault: false
+    };
+
+    setAddresses([...addresses, newAddr]);
+    setSelectedAddress(newAddr.id);
+    setAddressModalOpen(false);
+    
+    // Reset form
+    setNewAddress({
+      line1: "",
+      line2: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "USA"
+    });
+    
+    toast.success("New address added", {
+      description: "Your shipping address has been updated"
+    });
+  };
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,43 +221,27 @@ const Checkout = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="firstName">First name</Label>
-                      <Input 
-                        id="firstName" 
-                        value={userProfile?.first_name || ""}
-                        onChange={(e) => setUserProfile({...userProfile!, first_name: e.target.value})}
-                        className="mt-1"
-                        required
-                      />
+                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                        {userProfile.first_name || "Test"}
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="lastName">Last name</Label>
-                      <Input 
-                        id="lastName" 
-                        value={userProfile?.last_name || ""}
-                        onChange={(e) => setUserProfile({...userProfile!, last_name: e.target.value})}
-                        className="mt-1"
-                        required
-                      />
+                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                        {userProfile.last_name || "User"}
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="email">Email</Label>
-                      <Input 
-                        id="email" 
-                        type="email"
-                        value={userProfile?.email || ""}
-                        onChange={(e) => setUserProfile({...userProfile!, email: e.target.value})}
-                        className="mt-1"
-                      />
+                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                        {userProfile.email}
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="phone">Phone</Label>
-                      <Input 
-                        id="phone" 
-                        value={userProfile?.phone || ""}
-                        onChange={(e) => setUserProfile({...userProfile!, phone: e.target.value})}
-                        className="mt-1"
-                        required
-                      />
+                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+                        {userProfile.phone || "555-123-4567"}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -198,18 +250,132 @@ const Checkout = () => {
 
                 <div className="mb-8">
                   <h2 className="text-lg font-medium mb-4">Shipping Address</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="address">Address</Label>
-                      <Input 
-                        id="address" 
-                        value={userProfile?.address || ""}
-                        onChange={(e) => setUserProfile({...userProfile!, address: e.target.value})}
-                        className="mt-1"
-                        required
-                      />
-                    </div>
-                  </div>
+                  <RadioGroup 
+                    value={selectedAddress} 
+                    onValueChange={setSelectedAddress}
+                    className="space-y-2"
+                  >
+                    {addresses.map(address => (
+                      <div 
+                        key={address.id}
+                        className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <div className="font-medium">
+                            {address.isDefault && <span className="inline-block bg-primary/10 text-xs rounded px-2 py-0.5 mr-2">Default</span>}
+                            Shipping Address
+                          </div>
+                          <div className="text-sm text-muted-foreground mt-1">
+                            {address.line1}
+                            {address.line2 && `, ${address.line2}`}
+                            <br />
+                            {address.city}, {address.state} {address.zip}
+                          </div>
+                        </div>
+                        <RadioGroupItem value={address.id} className="ml-3" />
+                      </div>
+                    ))}
+                  </RadioGroup>
+                  
+                  <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="mt-3 w-full flex items-center justify-center gap-2"
+                      >
+                        <PlusCircle className="h-4 w-4" />
+                        Add New Address
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Add New Address</DialogTitle>
+                        <DialogDescription>
+                          Enter your shipping address details below
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="street">Street Address</Label>
+                          <Input 
+                            id="street" 
+                            placeholder="123 Main St" 
+                            value={newAddress.line1}
+                            onChange={(e) => setNewAddress({...newAddress, line1: e.target.value})}
+                          />
+                        </div>
+                        
+                        <div className="grid gap-2">
+                          <Label htmlFor="apt">Apartment, suite, etc. (optional)</Label>
+                          <Input 
+                            id="apt" 
+                            placeholder="Apt 4B" 
+                            value={newAddress.line2 || ""}
+                            onChange={(e) => setNewAddress({...newAddress, line2: e.target.value})}
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor="city">City</Label>
+                            <Input 
+                              id="city" 
+                              placeholder="New York" 
+                              value={newAddress.city}
+                              onChange={(e) => setNewAddress({...newAddress, city: e.target.value})}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="state">State</Label>
+                            <Input 
+                              id="state" 
+                              placeholder="NY" 
+                              value={newAddress.state}
+                              onChange={(e) => setNewAddress({...newAddress, state: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor="zip">ZIP Code</Label>
+                            <Input 
+                              id="zip" 
+                              placeholder="10001" 
+                              value={newAddress.zip}
+                              onChange={(e) => setNewAddress({...newAddress, zip: e.target.value})}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="country">Country</Label>
+                            <Input 
+                              id="country" 
+                              value={newAddress.country}
+                              onChange={(e) => setNewAddress({...newAddress, country: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end gap-3">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => setAddressModalOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="button" 
+                          onClick={handleAddNewAddress}
+                          disabled={!newAddress.line1 || !newAddress.city || !newAddress.state || !newAddress.zip}
+                        >
+                          Save Address
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
 
                 <Separator className="my-6" />
@@ -219,54 +385,45 @@ const Checkout = () => {
                   <RadioGroup 
                     value={paymentMethod} 
                     onValueChange={setPaymentMethod}
-                    className="space-y-4"
+                    className="space-y-2"
                   >
-                    <div className="flex items-center space-x-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <RadioGroupItem value="cash" id="cash" />
-                      <Label 
-                        htmlFor="cash" 
-                        className="flex flex-1 items-center gap-3 cursor-pointer font-normal"
-                      >
+                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
                         <CreditCard className="h-5 w-5 text-muted-foreground" />
                         <div>
-                          <div>Cash on Delivery</div>
+                          <div className="font-medium">Cash on Delivery</div>
                           <div className="text-sm text-muted-foreground">
                             Pay when your order is delivered
                           </div>
                         </div>
-                      </Label>
+                      </div>
+                      <RadioGroupItem value="cash" className="ml-3" />
                     </div>
                     
-                    <div className="flex items-center space-x-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <RadioGroupItem value="ach" id="ach" />
-                      <Label 
-                        htmlFor="ach" 
-                        className="flex flex-1 items-center gap-3 cursor-pointer font-normal"
-                      >
+                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
                         <Landmark className="h-5 w-5 text-muted-foreground" />
                         <div>
-                          <div>ACH Payment</div>
+                          <div className="font-medium">ACH Payment</div>
                           <div className="text-sm text-muted-foreground">
                             Direct bank transfer
                           </div>
                         </div>
-                      </Label>
+                      </div>
+                      <RadioGroupItem value="ach" className="ml-3" />
                     </div>
                     
-                    <div className="flex items-center space-x-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <RadioGroupItem value="credit" id="credit" />
-                      <Label 
-                        htmlFor="credit" 
-                        className="flex flex-1 items-center gap-3 cursor-pointer font-normal"
-                      >
+                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
                         <Clock className="h-5 w-5 text-muted-foreground" />
                         <div>
-                          <div>Open a Line of Credit</div>
+                          <div className="font-medium">Open a Line of Credit</div>
                           <div className="text-sm text-muted-foreground">
                             Flexible payment option for qualified customers
                           </div>
                         </div>
-                      </Label>
+                      </div>
+                      <RadioGroupItem value="credit" className="ml-3" />
                     </div>
                   </RadioGroup>
                 </div>
