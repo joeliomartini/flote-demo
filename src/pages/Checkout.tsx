@@ -254,7 +254,7 @@ const Checkout = () => {
                         key={address.id}
                         htmlFor={`address-${address.id}`}
                         className={cn(
-                          "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                          "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
                           selectedAddress === address.id && "ring-1 ring-primary border-primary"
                         )}
                       >
@@ -267,7 +267,7 @@ const Checkout = () => {
                               <div className="text-base font-medium text-foreground">{address.company}</div>
                             )}
                             {address.isDefault && (
-                              <Badge variant="default" className="ml-2 text-xs rounded px-2 py-0.5 text-primary-foreground font-normal">
+                              <Badge variant="default" className="ml-2">
                                 Default
                               </Badge>
                             )}
@@ -408,7 +408,7 @@ const Checkout = () => {
                     <label 
                       htmlFor="standard-shipping"
                       className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
                         fulfillmentMethod === "standard" && "ring-1 ring-primary border-primary"
                       )}
                     >
@@ -431,7 +431,7 @@ const Checkout = () => {
                     <label 
                       htmlFor="express-shipping"
                       className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
                         fulfillmentMethod === "express" && "ring-1 ring-primary border-primary"
                       )}
                     >
@@ -467,7 +467,7 @@ const Checkout = () => {
                     <label 
                       htmlFor="cash-payment"
                       className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
                         paymentMethod === "cash" && "ring-1 ring-primary border-primary"
                       )}
                     >
@@ -490,7 +490,7 @@ const Checkout = () => {
                     <label 
                       htmlFor="ach-payment"
                       className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
                         paymentMethod === "ach" && "ring-1 ring-primary border-primary"
                       )}
                     >
@@ -513,7 +513,7 @@ const Checkout = () => {
                     <label 
                       htmlFor="credit-payment"
                       className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
                         paymentMethod === "credit" && "ring-1 ring-primary border-primary"
                       )}
                     >
