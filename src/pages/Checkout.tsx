@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin, Truck, ZapIcon, Camera, RefreshCcw } from "lucide-react";
+import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin, Truck, ZapIcon, Camera, RefreshCcw, AlertCircle } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -54,11 +53,10 @@ const Checkout = () => {
     country: "USA"
   });
   const [addressModalOpen, setAddressModalOpen] = useState(false);
-  
-  // Camera states
   const [cameraModalOpen, setCameraModalOpen] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [cameraPermissionDenied, setCameraPermissionDenied] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -104,7 +102,6 @@ const Checkout = () => {
           .eq('id', user.id)
           .single();
 
-        // Set default placeholder values if the user is authenticated but has incomplete profile
         const placeholderProfile = {
           first_name: "Example",
           last_name: "Customer",
@@ -118,7 +115,6 @@ const Checkout = () => {
           return;
         }
         
-        // Use placeholder values for any missing profile fields
         setUserProfile({
           first_name: data.first_name || placeholderProfile.first_name,
           last_name: data.last_name || placeholderProfile.last_name,
@@ -143,6 +139,8 @@ const Checkout = () => {
 
   const startCamera = async () => {
     try {
+      setCameraPermissionDenied(false);
+      
       const mediaStream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' },
         audio: false 
@@ -155,8 +153,11 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error("Error accessing camera:", error);
+      
+      setCameraPermissionDenied(true);
+      
       toast.error("Camera access denied", {
-        description: "Please allow camera access to continue with cash verification"
+        description: "Please allow camera access in your browser settings"
       });
     }
   };
@@ -166,6 +167,7 @@ const Checkout = () => {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
     }
+    setCameraPermissionDenied(false);
   };
 
   const capturePhoto = () => {
@@ -173,11 +175,9 @@ const Checkout = () => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
-      // Set canvas dimensions to match video
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
-      // Draw the current video frame to the canvas
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -192,12 +192,9 @@ const Checkout = () => {
   };
 
   const confirmPhoto = () => {
-    // Here you would typically upload the photo to your backend
-    // For now we'll just complete the flow
     stopCamera();
     setCameraModalOpen(false);
     
-    // Process the order
     setTimeout(() => {
       toast.success("Order placed successfully!", {
         description: "Cash payment verification complete. Your order will be processed."
@@ -207,7 +204,6 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    // Clean up camera resources when component unmounts
     return () => {
       stopCamera();
     };
@@ -252,15 +248,12 @@ const Checkout = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      // For cash on delivery, open the camera modal
       if (paymentMethod === "cash") {
         setIsLoading(false);
         setCameraModalOpen(true);
-        // Camera will be started when modal opens
         return;
       }
       
-      // For other payment methods, process normally
       setTimeout(() => {
         toast.success("Order placed successfully!", {
           description: `Your order will be processed using ${
@@ -279,7 +272,6 @@ const Checkout = () => {
     }
   };
 
-  // Start camera when camera modal opens
   useEffect(() => {
     if (cameraModalOpen) {
       startCamera();
@@ -716,7 +708,6 @@ const Checkout = () => {
         </div>
       </div>
 
-      {/* Camera Modal */}
       <Dialog open={cameraModalOpen} onOpenChange={(open) => {
         if (!open) {
           stopCamera();
@@ -727,12 +718,36 @@ const Checkout = () => {
           <DialogHeader>
             <DialogTitle>Verify Cash Payment</DialogTitle>
             <DialogDescription>
-              Please take a photo of the cash you'll use for payment
+              Please take a photo of the cash you'll use for payment. This requires camera access.
             </DialogDescription>
           </DialogHeader>
           
           <div className="relative overflow-hidden rounded-lg border bg-muted">
-            {!capturedImage ? (
+            {cameraPermissionDenied ? (
+              <div className="p-6 flex flex-col items-center justify-center text-center space-y-4 h-[300px]">
+                <AlertCircle className="h-12 w-12 text-destructive" />
+                <div>
+                  <h3 className="font-medium text-lg">Camera access required</h3>
+                  <p className="text-muted-foreground mt-1 mb-4">
+                    We need permission to use your camera to verify the cash payment.
+                  </p>
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">How to enable camera access:</p>
+                    <ol className="text-sm text-left list-decimal pl-5 space-y-1">
+                      <li>Click the camera/lock icon in your browser's address bar</li>
+                      <li>Select "Allow" for camera access</li>
+                      <li>Refresh the page and try again</li>
+                    </ol>
+                  </div>
+                </div>
+                <Button 
+                  onClick={startCamera}
+                  className="mt-2"
+                >
+                  Try Again
+                </Button>
+              </div>
+            ) : !capturedImage ? (
               <>
                 <video 
                   ref={videoRef} 
@@ -773,7 +788,6 @@ const Checkout = () => {
             )}
           </div>
           
-          {/* Hidden canvas for capturing image */}
           <canvas ref={canvasRef} className="hidden" />
           
           <DialogFooter>
