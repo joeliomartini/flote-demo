@@ -1,3 +1,4 @@
+
 export interface Product {
   id: string;
   name: string;
@@ -143,7 +144,7 @@ export const products: Product[] = [
     name: "Cannabis Terpene Diffuser",
     description: "Aromatherapy device using natural cannabis terpenes.",
     price: 45.00,
-    image: "https://images.pexels.com/photos/6685583/pexels-photo-6685583.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: "https://images.pexels.com/photos/6044226/pexels-photo-6044226.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Accessories",
     brand: "AromaTech",
     type: "Accessory",
