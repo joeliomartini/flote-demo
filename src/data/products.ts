@@ -1,4 +1,3 @@
-
 export interface Product {
   id: string;
   name: string;
@@ -18,6 +17,10 @@ export interface Product {
     weight?: string;
     color?: string[];
   };
+  created_at?: string;
+  updated_at?: string;
+  brand_id?: string;
+  category_id?: string;
 }
 
 export const products: Product[] = [
