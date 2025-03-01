@@ -11,7 +11,7 @@ const CartTab: React.FC = () => {
       className="cart-tab group hover:shadow-xl hover:translate-x-0 relative"
       onClick={toggleCart}
       aria-label="Open cart"
-      style={{ transform: itemCount === 0 ? 'translateX(100%)' : 'translateX(0)' }}
+      // Remove the conditional transform that hides the tab completely
     >
       {itemCount > 0 && (
         <>
