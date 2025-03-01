@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -273,7 +272,7 @@ const Checkout = () => {
                               </Badge>
                             )}
                           </div>
-                          <div className="mt-2">
+                          <div className="mt-1">
                             <div className="text-sm text-muted-foreground">
                               {address.line1}
                               {address.line2 && `, ${address.line2}`}
