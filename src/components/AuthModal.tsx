@@ -41,11 +41,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
     setLoading(true);
 
     try {
+      // Explicitly use OTP authentication
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          // In a real app, you'd include your app's URL here
           emailRedirectTo: window.location.origin,
+          // Force OTP flow
+          shouldCreateUser: false
         },
       });
 
@@ -53,13 +55,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
         throw error;
       }
 
-      toast.success("Check your email for the login link", {
-        description: "We've sent you a magic link to your email."
+      toast.success("Check your email for the verification code", {
+        description: "We've sent you a 6-digit code to your email."
       });
       
       setShowOTPInput(true);
     } catch (error: any) {
-      toast.error("Failed to send magic link", {
+      toast.error("Failed to send verification code", {
         description: error.message
       });
     } finally {
@@ -71,7 +73,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
     e.preventDefault();
     
     if (otp.length !== 6) {
-      toast.error("Please enter a valid OTP code");
+      toast.error("Please enter a valid 6-digit code");
       return;
     }
 
@@ -92,7 +94,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
       onAuthenticated();
       onClose();
     } catch (error: any) {
-      toast.error("Failed to verify OTP", {
+      toast.error("Failed to verify code", {
         description: error.message
       });
     } finally {
@@ -115,8 +117,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
           </DialogTitle>
           <DialogDescription>
             {showOTPInput 
-              ? "Please enter the verification code sent to your email."
-              : "Enter your email to receive a magic link for secure checkout."}
+              ? "Please enter the 6-digit code sent to your email."
+              : "Enter your email to receive a verification code for secure checkout."}
           </DialogDescription>
         </DialogHeader>
 
@@ -138,7 +140,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Sending link..." : "Send Magic Link"}
+              {loading ? "Sending code..." : "Send Verification Code"}
             </Button>
           </form>
         ) : (
