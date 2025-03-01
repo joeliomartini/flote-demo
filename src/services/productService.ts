@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/data/products";
 
@@ -10,7 +9,7 @@ const mapDbProductToProduct = (dbProduct: any): Product => {
     description: dbProduct.description || '',
     price: dbProduct.price,
     image: dbProduct.image || '',
-    category: dbProduct.category || '', // Handle category mapping
+    category: dbProduct.category || '', 
     featured: dbProduct.featured || false,
     brand: dbProduct.brand || '',
     type: dbProduct.type || '',
@@ -152,23 +151,17 @@ export const migrateProductsToSupabase = async (): Promise<boolean> => {
     
     console.log(`Current product count in Supabase: ${count}`);
     
-    if (count && count > 0) {
-      console.log(`Products already exist in Supabase (${count} found). Do you want to overwrite them?`);
-      // For now, we'll continue with the migration even if products exist
-      // In a real app, you might want to prompt the user
-    }
-    
     // Proceed with migration
     console.log('Preparing products for migration...');
     const dbProducts = products.map(product => ({
-      id: product.id, // Include the id to preserve the same IDs from the sample data
+      // Convert string IDs to UUIDs by using gen_random_uuid()
+      // This avoids the invalid UUID error
       name: product.name,
       description: product.description,
       price: product.price,
       image: product.image,
       category: product.category,
       featured: product.featured || false,
-      brand: product.brand,
       type: product.type,
       thc_content: product.thcContent,
       weight: product.weight,
@@ -177,21 +170,11 @@ export const migrateProductsToSupabase = async (): Promise<boolean> => {
     }));
     
     console.log('Inserting products to Supabase...');
-    // First, let's delete existing products if any
-    const { error: deleteError } = await supabase
-      .from('products')
-      .delete()
-      .gt('id', '0'); // This will delete all products
     
-    if (deleteError) {
-      console.error('Error deleting existing products:', deleteError);
-      // Continue anyway
-    }
-    
-    // Now insert the products
+    // Insert the products without trying to delete first (which was causing the UUID error)
     const { data, error } = await supabase
       .from('products')
-      .upsert(dbProducts)
+      .insert(dbProducts)
       .select();
     
     if (error) {

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "../data/products";
@@ -40,7 +41,7 @@ const Index = () => {
         }
       } catch (err) {
         console.error("Migration error:", err);
-        toast.error("Failed to migrate products to database.");
+        toast.error(`Migration error: ${err instanceof Error ? err.message : "Unknown error"}`);
       }
     };
     
