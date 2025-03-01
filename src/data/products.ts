@@ -30,7 +30,7 @@ export const products: Product[] = [
     name: "Premium CBD Oil",
     description: "High-quality CBD oil for relaxation and wellness.",
     price: 69.99,
-    image: "https://plus.unsplash.com/premium_photo-1681276170629-9bbdaad6af3c?q=80&w=600",
+    image: "https://images.pexels.com/photos/4068314/pexels-photo-4068314.jpeg?auto=compress&cs=tinysrgb&w=600",
     category: "Tinctures",
     featured: true,
     brand: "HealWell",
