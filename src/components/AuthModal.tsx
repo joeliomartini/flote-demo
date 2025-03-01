@@ -1,0 +1,187 @@
+
+import React, { useState } from "react";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { 
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot
+} from "@/components/ui/input-otp";
+import { toast } from "sonner";
+import { Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface AuthModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAuthenticated: () => void;
+}
+
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated }) => {
+  const [email, setEmail] = useState("");
+  const [showOTPInput, setShowOTPInput] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSendMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !email.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          // In a real app, you'd include your app's URL here
+          emailRedirectTo: window.location.origin,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Check your email for the login link", {
+        description: "We've sent you a magic link to your email."
+      });
+      
+      setShowOTPInput(true);
+    } catch (error: any) {
+      toast.error("Failed to send magic link", {
+        description: error.message
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (otp.length !== 6) {
+      toast.error("Please enter a valid OTP code");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'magiclink'
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Successfully authenticated!");
+      onAuthenticated();
+      onClose();
+    } catch (error: any) {
+      toast.error("Failed to verify OTP", {
+        description: error.message
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetForm = () => {
+    setShowOTPInput(false);
+    setOtp("");
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            {showOTPInput ? "Enter verification code" : "Sign in to checkout"}
+          </DialogTitle>
+          <DialogDescription>
+            {showOTPInput 
+              ? "Please enter the verification code sent to your email."
+              : "Enter your email to receive a magic link for secure checkout."}
+          </DialogDescription>
+        </DialogHeader>
+
+        {!showOTPInput ? (
+          <form onSubmit={handleSendMagicLink} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium">
+                Email address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Sending link..." : "Send Magic Link"}
+            </Button>
+          </form>
+        ) : (
+          <form onSubmit={handleVerifyOTP} className="space-y-4">
+            <div className="flex flex-col items-center space-y-2">
+              <label htmlFor="otp" className="text-sm font-medium self-start">
+                Verification code
+              </label>
+              <InputOTP 
+                maxLength={6} 
+                value={otp} 
+                onChange={setOtp}
+                disabled={loading}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Verifying..." : "Verify & Continue"}
+              </Button>
+              <Button 
+                type="button" 
+                variant="ghost" 
+                onClick={handleResetForm}
+                disabled={loading}
+              >
+                Back to email
+              </Button>
+            </div>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default AuthModal;
