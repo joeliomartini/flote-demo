@@ -243,25 +243,29 @@ const Checkout = () => {
                     className="space-y-2"
                   >
                     {addresses.map(address => (
-                      <div 
+                      <label 
                         key={address.id}
-                        className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative"
+                        htmlFor={`address-${address.id}`}
+                        className={cn(
+                          "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                          selectedAddress === address.id && "ring-2 ring-primary/30 border-primary/50"
+                        )}
                       >
                         <div className="absolute top-3 right-3">
-                          <RadioGroupItem value={address.id} iconPosition="right" />
+                          <RadioGroupItem id={`address-${address.id}`} value={address.id} iconPosition="right" />
                         </div>
                         <div className="flex-1 pr-8">
                           <div className="font-medium">
                             {address.isDefault && <span className="inline-block bg-primary/10 text-xs rounded px-2 py-0.5 mr-2">Default</span>}
                           </div>
-                          <div className="text-sm mt-1">
+                          <div className="text-sm">
                             {address.line1}
                             {address.line2 && `, ${address.line2}`}
                             <br />
                             {address.city}, {address.state} {address.zip}
                           </div>
                         </div>
-                      </div>
+                      </label>
                     ))}
                   </RadioGroup>
                   
@@ -375,9 +379,15 @@ const Checkout = () => {
                     onValueChange={setFulfillmentMethod}
                     className="space-y-2"
                   >
-                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                    <label 
+                      htmlFor="standard-shipping"
+                      className={cn(
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        fulfillmentMethod === "standard" && "ring-2 ring-primary/30 border-primary/50"
+                      )}
+                    >
                       <div className="absolute top-3 right-3">
-                        <RadioGroupItem value="standard" iconPosition="right" />
+                        <RadioGroupItem id="standard-shipping" value="standard" iconPosition="right" />
                       </div>
                       <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
@@ -385,16 +395,22 @@ const Checkout = () => {
                         </div>
                         <div>
                           <div className="font-medium">Standard Shipping</div>
-                          <div className="text-sm">
+                          <div className="text-sm text-muted-foreground">
                             3-5 business days
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </label>
                     
-                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                    <label 
+                      htmlFor="express-shipping"
+                      className={cn(
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        fulfillmentMethod === "express" && "ring-2 ring-primary/30 border-primary/50"
+                      )}
+                    >
                       <div className="absolute top-3 right-3">
-                        <RadioGroupItem value="express" iconPosition="right" />
+                        <RadioGroupItem id="express-shipping" value="express" iconPosition="right" />
                       </div>
                       <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
@@ -404,12 +420,12 @@ const Checkout = () => {
                         </div>
                         <div>
                           <div className="font-medium">Express Delivery</div>
-                          <div className="text-sm">
+                          <div className="text-sm text-muted-foreground">
                             1-2 business days
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </label>
                   </RadioGroup>
                 </div>
 
@@ -422,9 +438,15 @@ const Checkout = () => {
                     onValueChange={setPaymentMethod}
                     className="space-y-2"
                   >
-                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                    <label 
+                      htmlFor="cash-payment"
+                      className={cn(
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        paymentMethod === "cash" && "ring-2 ring-primary/30 border-primary/50"
+                      )}
+                    >
                       <div className="absolute top-3 right-3">
-                        <RadioGroupItem value="cash" iconPosition="right" />
+                        <RadioGroupItem id="cash-payment" value="cash" iconPosition="right" />
                       </div>
                       <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
@@ -432,16 +454,22 @@ const Checkout = () => {
                         </div>
                         <div>
                           <div className="font-medium">Cash on Delivery</div>
-                          <div className="text-sm">
+                          <div className="text-sm text-muted-foreground">
                             Pay when your order is delivered
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </label>
                     
-                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                    <label 
+                      htmlFor="ach-payment"
+                      className={cn(
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        paymentMethod === "ach" && "ring-2 ring-primary/30 border-primary/50"
+                      )}
+                    >
                       <div className="absolute top-3 right-3">
-                        <RadioGroupItem value="ach" iconPosition="right" />
+                        <RadioGroupItem id="ach-payment" value="ach" iconPosition="right" />
                       </div>
                       <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
@@ -449,16 +477,22 @@ const Checkout = () => {
                         </div>
                         <div>
                           <div className="font-medium">ACH Payment</div>
-                          <div className="text-sm">
+                          <div className="text-sm text-muted-foreground">
                             Direct bank transfer
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </label>
                     
-                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                    <label 
+                      htmlFor="credit-payment"
+                      className={cn(
+                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
+                        paymentMethod === "credit" && "ring-2 ring-primary/30 border-primary/50"
+                      )}
+                    >
                       <div className="absolute top-3 right-3">
-                        <RadioGroupItem value="credit" iconPosition="right" />
+                        <RadioGroupItem id="credit-payment" value="credit" iconPosition="right" />
                       </div>
                       <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
@@ -466,12 +500,12 @@ const Checkout = () => {
                         </div>
                         <div>
                           <div className="font-medium">Open a Line of Credit</div>
-                          <div className="text-sm">
+                          <div className="text-sm text-muted-foreground">
                             Flexible payment option for qualified customers
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </label>
                   </RadioGroup>
                 </div>
 
