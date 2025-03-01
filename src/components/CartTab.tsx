@@ -8,10 +8,9 @@ const CartTab: React.FC = () => {
 
   return (
     <div 
-      className="cart-tab group hover:shadow-xl hover:translate-x-0 relative"
+      className="cart-tab group hover:shadow-xl hover:translate-x-0 fixed right-0 top-1/2 -translate-y-1/2 transform cursor-pointer rounded-l-lg bg-black px-4 py-6 text-white shadow-lg transition-all duration-300"
       onClick={toggleCart}
       aria-label="Open cart"
-      // Remove the conditional transform that hides the tab completely
     >
       {itemCount > 0 && (
         <>
