@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -87,10 +88,10 @@ const CartDrawer: React.FC = () => {
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-muted-foreground">Fulfillment</span>
                   <span>Calculated at checkout</span>
                 </div>
-                <Separator className="my-2" />
+                <Separator className="my-4" />
                 <div className="flex items-center justify-between font-medium">
                   <span>Total</span>
                   <span>${totalPrice.toFixed(2)}</span>
