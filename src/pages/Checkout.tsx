@@ -1,37 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin, Truck, ZapIcon, Camera, RefreshCcw, AlertCircle } from "lucide-react";
+import { ShoppingBag, ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-
-interface UserProfile {
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
-  address?: string;
-  email: string;
-}
-
-interface Address {
-  id: string;
-  company?: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-  isDefault: boolean;
-}
+import { ContactInformation } from "@/components/checkout/ContactInformation";
+import { ShippingAddress } from "@/components/checkout/ShippingAddress";
+import { FulfillmentMethod } from "@/components/checkout/FulfillmentMethod";
+import { PaymentMethod } from "@/components/checkout/PaymentMethod";
+import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { CameraModal } from "@/components/checkout/CameraModal";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { UserProfile, Address } from "@/types/checkout";
 
 const Checkout = () => {
   const { items, totalPrice } = useCart();
@@ -43,35 +25,19 @@ const Checkout = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [bypassCartCheck] = useState(location.state?.bypassCheck || true);
   const [selectedAddress, setSelectedAddress] = useState<string>("default");
-  const [newAddress, setNewAddress] = useState({
-    company: "",
-    line1: "",
-    line2: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "USA"
-  });
-  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [addresses, setAddresses] = useState<Address[]>([
+    {
+      id: "default",
+      company: "Mountain Hardware Store",
+      line1: "1842 Pine Ridge Road",
+      city: "Whitefish",
+      state: "MT",
+      zip: "59937",
+      country: "USA",
+      isDefault: true
+    }
+  ]);
   const [cameraModalOpen, setCameraModalOpen] = useState(false);
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [cameraPermissionDenied, setCameraPermissionDenied] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const defaultAddress: Address = {
-    id: "default",
-    company: "Mountain Hardware Store",
-    line1: "1842 Pine Ridge Road",
-    city: "Whitefish",
-    state: "MT",
-    zip: "59937",
-    country: "USA",
-    isDefault: true
-  };
-
-  const [addresses, setAddresses] = useState<Address[]>([defaultAddress]);
 
   useEffect(() => {
     if (items.length === 0 && !bypassCartCheck) {
@@ -137,111 +103,15 @@ const Checkout = () => {
     fetchUserProfile();
   }, [items.length, navigate, bypassCartCheck]);
 
-  const startCamera = async () => {
-    try {
-      setCameraPermissionDenied(false);
-      
-      // Stop any existing stream before starting a new one
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-      
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' },
-        audio: false 
-      });
-      
-      setStream(mediaStream);
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-      }
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-      
-      setCameraPermissionDenied(true);
-      
-      toast.error("Camera access denied", {
-        description: "Please allow camera access in your browser settings"
-      });
-    }
-  };
-
-  const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
-    setCameraPermissionDenied(false);
-  };
-
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      const context = canvas.getContext('2d');
-      if (context) {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageDataUrl = canvas.toDataURL('image/jpeg');
-        setCapturedImage(imageDataUrl);
-      }
-    }
-  };
-
-  const retakePhoto = () => {
-    setCapturedImage(null);
-    // Restart the camera after setting capturedImage to null
-    startCamera();
-  };
-
-  const confirmPhoto = () => {
-    stopCamera();
-    setCameraModalOpen(false);
-    
-    setTimeout(() => {
-      toast.success("Order placed successfully!", {
-        description: "Cash payment verification complete. Your order will be processed."
-      });
-      navigate("/");
-    }, 1000);
-  };
-
-  useEffect(() => {
-    return () => {
-      stopCamera();
-    };
-  }, []);
-
-  const handleAddNewAddress = () => {
+  const handleAddNewAddress = (newAddress: Omit<Address, "id" | "isDefault">) => {
     const newAddr: Address = {
       id: `address-${Date.now()}`,
-      company: newAddress.company,
-      line1: newAddress.line1,
-      line2: newAddress.line2,
-      city: newAddress.city,
-      state: newAddress.state,
-      zip: newAddress.zip,
-      country: newAddress.country,
+      ...newAddress,
       isDefault: false
     };
 
     setAddresses([...addresses, newAddr]);
     setSelectedAddress(newAddr.id);
-    setAddressModalOpen(false);
-    
-    setNewAddress({
-      company: "",
-      line1: "",
-      line2: "",
-      city: "",
-      state: "",
-      zip: "",
-      country: "USA"
-    });
     
     toast.success("New address added", {
       description: "Your shipping address has been updated"
@@ -253,7 +123,7 @@ const Checkout = () => {
     setIsLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.auth.getUser();
       
       if (paymentMethod === "cash") {
         setIsLoading(false);
@@ -279,13 +149,16 @@ const Checkout = () => {
     }
   };
 
-  useEffect(() => {
-    if (cameraModalOpen) {
-      startCamera();
-    } else {
-      stopCamera();
-    }
-  }, [cameraModalOpen]);
+  const handleCameraSuccess = () => {
+    setCameraModalOpen(false);
+    
+    setTimeout(() => {
+      toast.success("Order placed successfully!", {
+        description: "Cash payment verification complete. Your order will be processed."
+      });
+      navigate("/");
+    }, 1000);
+  };
 
   if (!userProfile) {
     return (
@@ -318,323 +191,33 @@ const Checkout = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm p-6">
               <form onSubmit={handleSubmitOrder}>
-                <div className="mb-8">
-                  <h2 className="text-lg font-medium mb-4">Contact Information</h2>
-                  <div className="bg-secondary/30 rounded-lg p-4 space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm text-muted-foreground mb-1">Name</div>
-                        <div className="font-medium">{userProfile.first_name} {userProfile.last_name}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground mb-1">Email</div>
-                        <div className="font-medium">{userProfile.email}</div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">Phone</div>
-                      <div className="font-medium">{userProfile.phone}</div>
-                    </div>
-                  </div>
-                </div>
-
+                <ContactInformation userProfile={userProfile} />
+                
                 <Separator className="my-6" />
-
-                <div className="mb-8">
-                  <h2 className="text-lg font-medium mb-4">Shipping Address</h2>
-                  <RadioGroup 
-                    value={selectedAddress} 
-                    onValueChange={setSelectedAddress}
-                    className="space-y-2"
-                  >
-                    {addresses.map(address => (
-                      <label 
-                        key={address.id}
-                        htmlFor={`address-${address.id}`}
-                        className={cn(
-                          "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
-                          selectedAddress === address.id && "ring-1 ring-primary border-primary"
-                        )}
-                      >
-                        <div className="absolute top-3 right-3">
-                          <RadioGroupItem id={`address-${address.id}`} value={address.id} iconPosition="right" />
-                        </div>
-                        <div className="flex-1 pr-8">
-                          <div className="font-medium flex items-center">
-                            {address.company && (
-                              <div className="text-base font-medium text-foreground">{address.company}</div>
-                            )}
-                            {address.isDefault && (
-                              <Badge variant="default" className="ml-2">
-                                Default
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="mt-1">
-                            <div className="text-sm text-muted-foreground">
-                              {address.line1}
-                              {address.line2 && `, ${address.line2}`}
-                              <br />
-                              {address.city}, {address.state} {address.zip}
-                            </div>
-                          </div>
-                        </div>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                  
-                  <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
-                    <DialogTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        className="mt-3 w-full flex items-center justify-center gap-2"
-                      >
-                        <PlusCircle className="h-4 w-4" />
-                        Add New Address
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle>Add New Address</DialogTitle>
-                        <DialogDescription>
-                          Enter your shipping address details below
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                      <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="company">Company Name (optional)</Label>
-                          <Input 
-                            id="company" 
-                            placeholder="Acme Inc." 
-                            value={newAddress.company || ""}
-                            onChange={(e) => setNewAddress({...newAddress, company: e.target.value})}
-                          />
-                        </div>
-                        
-                        <div className="grid gap-2">
-                          <Label htmlFor="street">Street Address</Label>
-                          <Input 
-                            id="street" 
-                            placeholder="123 Main St" 
-                            value={newAddress.line1}
-                            onChange={(e) => setNewAddress({...newAddress, line1: e.target.value})}
-                          />
-                        </div>
-                        
-                        <div className="grid gap-2">
-                          <Label htmlFor="apt">Apartment, suite, etc. (optional)</Label>
-                          <Input 
-                            id="apt" 
-                            placeholder="Apt 4B" 
-                            value={newAddress.line2 || ""}
-                            onChange={(e) => setNewAddress({...newAddress, line2: e.target.value})}
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="grid gap-2">
-                            <Label htmlFor="city">City</Label>
-                            <Input 
-                              id="city" 
-                              placeholder="New York" 
-                              value={newAddress.city}
-                              onChange={(e) => setNewAddress({...newAddress, city: e.target.value})}
-                            />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="state">State</Label>
-                            <Input 
-                              id="state" 
-                              placeholder="NY" 
-                              value={newAddress.state}
-                              onChange={(e) => setNewAddress({...newAddress, state: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="grid gap-2">
-                            <Label htmlFor="zip">ZIP Code</Label>
-                            <Input 
-                              id="zip" 
-                              placeholder="10001" 
-                              value={newAddress.zip}
-                              onChange={(e) => setNewAddress({...newAddress, zip: e.target.value})}
-                            />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="country">Country</Label>
-                            <Input 
-                              id="country" 
-                              value={newAddress.country}
-                              onChange={(e) => setNewAddress({...newAddress, country: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-end gap-3">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => setAddressModalOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button 
-                          type="button" 
-                          onClick={handleAddNewAddress}
-                          disabled={!newAddress.line1 || !newAddress.city || !newAddress.state || !newAddress.zip}
-                        >
-                          Save Address
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-
+                
+                <ShippingAddress 
+                  addresses={addresses} 
+                  selectedAddress={selectedAddress}
+                  onSelectAddress={setSelectedAddress}
+                  onAddNewAddress={handleAddNewAddress}
+                />
+                
                 <Separator className="my-6" />
-
-                <div className="mb-8">
-                  <h2 className="text-lg font-medium mb-4">Fulfillment Method</h2>
-                  <RadioGroup 
-                    value={fulfillmentMethod} 
-                    onValueChange={setFulfillmentMethod}
-                    className="space-y-2"
-                  >
-                    <label 
-                      htmlFor="standard-shipping"
-                      className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
-                        fulfillmentMethod === "standard" && "ring-1 ring-primary border-primary"
-                      )}
-                    >
-                      <div className="absolute top-3 right-3">
-                        <RadioGroupItem id="standard-shipping" value="standard" iconPosition="right" />
-                      </div>
-                      <div className="flex items-center gap-3 flex-1 pr-8">
-                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
-                          <Truck className="h-5 w-5 text-foreground" />
-                        </div>
-                        <div>
-                          <div className="font-medium">Standard Shipping</div>
-                          <div className="text-sm text-muted-foreground">
-                            3-5 business days
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-                    
-                    <label 
-                      htmlFor="express-shipping"
-                      className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
-                        fulfillmentMethod === "express" && "ring-1 ring-primary border-primary"
-                      )}
-                    >
-                      <div className="absolute top-3 right-3">
-                        <RadioGroupItem id="express-shipping" value="express" iconPosition="right" />
-                      </div>
-                      <div className="flex items-center gap-3 flex-1 pr-8">
-                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-foreground">
-                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="font-medium">Express Delivery</div>
-                          <div className="text-sm text-muted-foreground">
-                            1-2 business days
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-                  </RadioGroup>
-                </div>
-
+                
+                <FulfillmentMethod 
+                  fulfillmentMethod={fulfillmentMethod}
+                  onFulfillmentMethodChange={setFulfillmentMethod}
+                />
+                
                 <Separator className="my-6" />
-
-                <div>
-                  <h2 className="text-lg font-medium mb-4">Payment Method</h2>
-                  <RadioGroup 
-                    value={paymentMethod} 
-                    onValueChange={setPaymentMethod}
-                    className="space-y-2"
-                  >
-                    <label 
-                      htmlFor="cash-payment"
-                      className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
-                        paymentMethod === "cash" && "ring-1 ring-primary border-primary"
-                      )}
-                    >
-                      <div className="absolute top-3 right-3">
-                        <RadioGroupItem id="cash-payment" value="cash" iconPosition="right" />
-                      </div>
-                      <div className="flex items-center gap-3 flex-1 pr-8">
-                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
-                          <CreditCard className="h-5 w-5 text-foreground" />
-                        </div>
-                        <div>
-                          <div className="font-medium">Cash on Delivery</div>
-                          <div className="text-sm text-muted-foreground">
-                            Pay when your order is delivered
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-                    
-                    <label 
-                      htmlFor="ach-payment"
-                      className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
-                        paymentMethod === "ach" && "ring-1 ring-primary border-primary"
-                      )}
-                    >
-                      <div className="absolute top-3 right-3">
-                        <RadioGroupItem id="ach-payment" value="ach" iconPosition="right" />
-                      </div>
-                      <div className="flex items-center gap-3 flex-1 pr-8">
-                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
-                          <Landmark className="h-5 w-5 text-foreground" />
-                        </div>
-                        <div>
-                          <div className="font-medium">ACH Payment</div>
-                          <div className="text-sm text-muted-foreground">
-                            Direct bank transfer
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-                    
-                    <label 
-                      htmlFor="credit-payment"
-                      className={cn(
-                        "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer shadow-sm",
-                        paymentMethod === "credit" && "ring-1 ring-primary border-primary"
-                      )}
-                    >
-                      <div className="absolute top-3 right-3">
-                        <RadioGroupItem id="credit-payment" value="credit" iconPosition="right" />
-                      </div>
-                      <div className="flex items-center gap-3 flex-1 pr-8">
-                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
-                          <Clock className="h-5 w-5 text-foreground" />
-                        </div>
-                        <div>
-                          <div className="font-medium">Open a Line of Credit</div>
-                          <div className="text-sm text-muted-foreground">
-                            Flexible payment option for qualified customers
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-                  </RadioGroup>
-                </div>
-
+                
+                <PaymentMethod 
+                  paymentMethod={paymentMethod}
+                  onPaymentMethodChange={setPaymentMethod}
+                />
+                
                 <Separator className="my-6" />
-
+                
                 <Button 
                   type="submit" 
                   size="lg"
@@ -646,170 +229,18 @@ const Checkout = () => {
               </form>
             </div>
           </div>
-
+          
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
-              <h2 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <ShoppingBag className="h-5 w-5" />
-                Order Summary
-              </h2>
-
-              <Separator className="mb-4" />
-
-              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                {items.length > 0 ? (
-                  items.map((item) => (
-                    <div key={item.product.id} className="flex gap-3">
-                      <div className="h-16 w-16 rounded-md overflow-hidden bg-secondary flex-shrink-0">
-                        <img 
-                          src={item.product.image} 
-                          alt={item.product.name} 
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-sm font-medium line-clamp-1">{item.product.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Qty: {item.quantity}
-                        </p>
-                      </div>
-                      <div className="text-sm font-medium">
-                        ${(item.product.price * item.quantity).toFixed(2)}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-6 text-muted-foreground">
-                    <ShoppingBag className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                    <p>Your cart is empty</p>
-                    <p className="text-xs mt-1">This is a preview of the checkout page</p>
-                  </div>
-                )}
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>${items.length > 0 ? totalPrice.toFixed(2) : "0.00"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span>Free</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Taxes</span>
-                  <span>Calculated at checkout</span>
-                </div>
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="flex justify-between font-medium text-lg">
-                <span>Total</span>
-                <span>${items.length > 0 ? totalPrice.toFixed(2) : "0.00"}</span>
-              </div>
-            </div>
+            <OrderSummary items={items} totalPrice={totalPrice} />
           </div>
         </div>
       </div>
 
-      <Dialog open={cameraModalOpen} onOpenChange={(open) => {
-        if (!open) {
-          stopCamera();
-        }
-        setCameraModalOpen(open);
-      }}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Verify Cash Payment</DialogTitle>
-            <DialogDescription>
-              Please take a photo of the cash you'll use for payment. This requires camera access.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="relative overflow-hidden rounded-lg border bg-muted">
-            {cameraPermissionDenied ? (
-              <div className="p-6 flex flex-col items-center justify-center text-center space-y-4 h-[300px]">
-                <AlertCircle className="h-12 w-12 text-destructive" />
-                <div>
-                  <h3 className="font-medium text-lg">Camera access required</h3>
-                  <p className="text-muted-foreground mt-1 mb-4">
-                    We need permission to use your camera to verify the cash payment.
-                  </p>
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">How to enable camera access:</p>
-                    <ol className="text-sm text-left list-decimal pl-5 space-y-1">
-                      <li>Click the camera/lock icon in your browser's address bar</li>
-                      <li>Select "Allow" for camera access</li>
-                      <li>Refresh the page and try again</li>
-                    </ol>
-                  </div>
-                </div>
-                <Button 
-                  onClick={startCamera}
-                  className="mt-2"
-                >
-                  Try Again
-                </Button>
-              </div>
-            ) : !capturedImage ? (
-              <>
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
-                  className="h-[300px] w-full object-cover"
-                />
-                <div className="absolute bottom-3 left-0 right-0 flex justify-center">
-                  <Button 
-                    onClick={capturePhoto}
-                    variant="secondary"
-                    size="icon"
-                    className="rounded-full h-12 w-12 bg-white/80 hover:bg-white shadow-md"
-                  >
-                    <Camera className="h-6 w-6" />
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <div className="relative">
-                <img 
-                  src={capturedImage} 
-                  alt="Captured cash" 
-                  className="h-[300px] w-full object-contain"
-                />
-                <div className="absolute bottom-3 right-3">
-                  <Button 
-                    onClick={retakePhoto}
-                    variant="outline"
-                    size="sm"
-                    className="mr-2"
-                  >
-                    <RefreshCcw className="h-4 w-4 mr-1" />
-                    Retake
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <canvas ref={canvasRef} className="hidden" />
-          
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setCameraModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={confirmPhoto}
-              disabled={!capturedImage}
-            >
-              Confirm Payment
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CameraModal 
+        open={cameraModalOpen} 
+        onOpenChange={setCameraModalOpen}
+        onSuccess={handleCameraSuccess}
+      />
     </div>
   );
 };
