@@ -21,7 +21,7 @@ export const products: Product[] = [
     name: "Premium CBD Oil",
     description: "High-quality CBD oil for relaxation and wellness.",
     price: 69.99,
-    image: "https://images.unsplash.com/photo-1584807468034-75606e4382c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1614927252455-ea5c8a3a4b9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Tinctures",
     featured: true,
     details: {
@@ -36,7 +36,7 @@ export const products: Product[] = [
     name: "Infused Pre-Rolls",
     description: "Expertly crafted pre-rolls for a premium experience.",
     price: 38.00,
-    image: "https://images.unsplash.com/photo-1567637903900-3eeee70bfbf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1603909223429-69bb7db0c942?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Flower",
     details: {
       material: "Indoor Grown",
@@ -64,7 +64,7 @@ export const products: Product[] = [
     name: "Vape Cartridge",
     description: "Premium distillate vape cartridge with natural terpenes.",
     price: 49.00,
-    image: "https://images.unsplash.com/photo-1556707752-481d500a2c58?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1579119165870-8296f3157e38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Concentrates",
     featured: true,
     details: {
@@ -79,7 +79,7 @@ export const products: Product[] = [
     name: "Hemp-Infused Salve",
     description: "Soothing topical cream for localized relief.",
     price: 35.99,
-    image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1616690248366-8b93fab0bf95?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Topicals",
     details: {
       material: "All-Natural",
@@ -92,7 +92,7 @@ export const products: Product[] = [
     name: "CBD Sleep Tincture",
     description: "Specialized formula with melatonin for improved sleep.",
     price: 58.00,
-    image: "https://images.unsplash.com/photo-1611249021021-9cbb4aef104a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1611932843289-31e42dc42c83?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Tinctures",
     details: {
       material: "MCT Oil Base",
@@ -105,7 +105,7 @@ export const products: Product[] = [
     name: "Cannabis Terpene Diffuser",
     description: "Aromatherapy device using natural cannabis terpenes.",
     price: 45.00,
-    image: "https://images.unsplash.com/photo-1591543659402-8f037757e2ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1614142729092-ada8560bae78?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Accessories",
     details: {
       material: "Ceramic",
@@ -119,7 +119,7 @@ export const products: Product[] = [
     name: "Hemp Rolling Papers",
     description: "Premium organic hemp rolling papers with natural gum.",
     price: 12.00,
-    image: "https://images.unsplash.com/photo-1619230506840-6bcfbc457502?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1580251645806-90408ee84aae?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Accessories",
     details: {
       material: "Organic Hemp",
