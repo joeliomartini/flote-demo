@@ -82,7 +82,7 @@ const CartDrawer: React.FC = () => {
             </div>
             
             <div className="border-t p-6 space-y-4">
-              <div className="space-y-1.5">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
                   <span>${totalPrice.toFixed(2)}</span>
