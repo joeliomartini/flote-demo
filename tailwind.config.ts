@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -114,6 +113,11 @@ export default {
 					'0%': { transform: 'translateY(0px)' },
 					'50%': { transform: 'translateY(-5px)' },
 					'100%': { transform: 'translateY(0px)' }
+				},
+				'pulse-badge': {
+					'0%': { transform: 'scale(1)', opacity: '0.7' },
+					'70%': { transform: 'scale(1.5)', opacity: '0' },
+					'100%': { transform: 'scale(1)', opacity: '0' },
 				}
 			},
 			animation: {
@@ -127,7 +131,8 @@ export default {
 				'slide-out-right': 'slide-out-right 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
 				'slide-in-left': 'slide-in-left 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
 				'blur-in': 'blur-in 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-				'float': 'float 3s ease-in-out infinite'
+				'float': 'float 3s ease-in-out infinite',
+				'pulse-badge': 'pulse-badge 2s ease-in-out infinite'
 			}
 		}
 	},
