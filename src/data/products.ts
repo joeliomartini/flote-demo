@@ -21,7 +21,7 @@ export const products: Product[] = [
     name: "Premium CBD Oil",
     description: "High-quality CBD oil for relaxation and wellness.",
     price: 69.99,
-    image: "https://images.unsplash.com/photo-1590886204058-3a93b461584a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1611249021021-9cbb4aef104a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Tinctures",
     featured: true,
     details: {
@@ -36,7 +36,7 @@ export const products: Product[] = [
     name: "Infused Pre-Rolls",
     description: "Expertly crafted pre-rolls for a premium experience.",
     price: 38.00,
-    image: "https://images.unsplash.com/photo-1603909223429-69bb7101f420?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1621466550398-ac8062907657?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Flower",
     details: {
       material: "Indoor Grown",
@@ -50,7 +50,7 @@ export const products: Product[] = [
     name: "Cannabis-Infused Gummies",
     description: "Delicious fruit-flavored edibles for a consistent dose.",
     price: 24.50,
-    image: "https://images.unsplash.com/photo-1595468118155-fe827d3fe186?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Edibles",
     details: {
       material: "Natural Ingredients",
@@ -64,7 +64,7 @@ export const products: Product[] = [
     name: "Vape Cartridge",
     description: "Premium distillate vape cartridge with natural terpenes.",
     price: 49.00,
-    image: "https://images.unsplash.com/photo-1588931950485-f6192c50d08b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1579282240050-352db0a14c21?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Concentrates",
     featured: true,
     details: {
@@ -79,7 +79,7 @@ export const products: Product[] = [
     name: "Hemp-Infused Salve",
     description: "Soothing topical cream for localized relief.",
     price: 35.99,
-    image: "https://images.unsplash.com/photo-1618514613561-6a450a31c15a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1558453627-ada1b4f7c1b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Topicals",
     details: {
       material: "All-Natural",
@@ -92,7 +92,7 @@ export const products: Product[] = [
     name: "CBD Sleep Tincture",
     description: "Specialized formula with melatonin for improved sleep.",
     price: 58.00,
-    image: "https://images.unsplash.com/photo-1556762129-f428e094e5de?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1584607737663-84f13c3124c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Tinctures",
     details: {
       material: "MCT Oil Base",
@@ -105,7 +105,7 @@ export const products: Product[] = [
     name: "Cannabis Terpene Diffuser",
     description: "Aromatherapy device using natural cannabis terpenes.",
     price: 45.00,
-    image: "https://images.unsplash.com/photo-1532604363484-a2d39572608b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1636599882576-58ee0b2e0116?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Accessories",
     details: {
       material: "Ceramic",
@@ -119,7 +119,7 @@ export const products: Product[] = [
     name: "Hemp Rolling Papers",
     description: "Premium organic hemp rolling papers with natural gum.",
     price: 12.00,
-    image: "https://images.unsplash.com/photo-1560999448-1be371c19ef7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1619230506840-6bcfbc457502?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Accessories",
     details: {
       material: "Organic Hemp",
