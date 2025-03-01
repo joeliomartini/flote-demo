@@ -1,8 +1,7 @@
-
 import React from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { X, ShoppingBag, Trash2 } from "lucide-react";
+import { ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import QuantityCounter from "./QuantityCounter";
 import { Separator } from "@/components/ui/separator";
@@ -19,10 +18,6 @@ const CartDrawer: React.FC = () => {
               <ShoppingBag className="h-5 w-5" />
               <span>Your Cart {itemCount > 0 && `(${itemCount})`}</span>
             </SheetTitle>
-            <SheetClose className="rounded-full p-1.5 hover:bg-secondary">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </SheetClose>
           </div>
         </SheetHeader>
 
