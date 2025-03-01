@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -262,17 +263,17 @@ const Checkout = () => {
                           <RadioGroupItem id={`address-${address.id}`} value={address.id} iconPosition="right" />
                         </div>
                         <div className="flex-1 pr-8">
-                          <div className="font-medium">
+                          <div className="font-medium flex items-center">
+                            {address.company && (
+                              <div className="text-base font-medium text-foreground">{address.company}</div>
+                            )}
                             {address.isDefault && (
-                              <Badge variant="outline" className="bg-gray-100 text-xs rounded px-2 py-0.5 mr-2 text-muted-foreground font-normal">
+                              <Badge variant="default" className="ml-2 text-xs rounded px-2 py-0.5 text-primary-foreground font-normal">
                                 Default
                               </Badge>
                             )}
                           </div>
-                          <div>
-                            {address.company && (
-                              <div className="text-sm font-medium text-foreground">{address.company}</div>
-                            )}
+                          <div className="mt-2">
                             <div className="text-sm text-muted-foreground">
                               {address.line1}
                               {address.line2 && `, ${address.line2}`}
