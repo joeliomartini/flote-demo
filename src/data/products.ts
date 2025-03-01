@@ -18,113 +18,113 @@ export interface Product {
 export const products: Product[] = [
   {
     id: "1",
-    name: "Minimal Desk Lamp",
-    description: "A sleek, adjustable desk lamp with wireless charging base.",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1507646227500-4d01c67d2a25?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Lighting",
+    name: "Premium CBD Oil",
+    description: "High-quality CBD oil for relaxation and wellness.",
+    price: 69.99,
+    image: "https://images.unsplash.com/photo-1590886204058-3a93b461584a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Tinctures",
     featured: true,
     details: {
-      material: "Aluminum, Silicone",
-      dimensions: "12\" × 5\" × 18\"",
-      weight: "2.4 lbs",
-      color: ["White", "Black", "Silver"]
+      material: "Full Spectrum Extract",
+      dimensions: "30ml Bottle",
+      weight: "1.2 oz",
+      color: ["Clear", "Amber"]
     }
   },
   {
     id: "2",
-    name: "Ceramic Pour-Over Coffee Set",
-    description: "Handcrafted ceramic coffee dripper with matching cup.",
-    price: 68.00,
-    image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Kitchen",
+    name: "Infused Pre-Rolls",
+    description: "Expertly crafted pre-rolls for a premium experience.",
+    price: 38.00,
+    image: "https://images.unsplash.com/photo-1603909223429-69bb7101f420?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Flower",
     details: {
-      material: "Ceramic",
-      dimensions: "Dripper: 4\" × 4\" × 6\", Cup: 3\" × 3\" × 4\"",
-      weight: "1.2 lbs",
-      color: ["White", "Black", "Terra Cotta"]
+      material: "Indoor Grown",
+      dimensions: "Standard Size",
+      weight: "1g each",
+      color: ["Green", "Purple"]
     }
   },
   {
     id: "3",
-    name: "Merino Wool Throw Blanket",
-    description: "Ultra-soft merino wool blanket, perfect for cool evenings.",
-    price: 98.50,
-    image: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Home",
+    name: "Cannabis-Infused Gummies",
+    description: "Delicious fruit-flavored edibles for a consistent dose.",
+    price: 24.50,
+    image: "https://images.unsplash.com/photo-1595468118155-fe827d3fe186?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Edibles",
     details: {
-      material: "100% Merino Wool",
-      dimensions: "50\" × 60\"",
-      weight: "2.8 lbs",
-      color: ["Cream", "Gray", "Navy"]
+      material: "Natural Ingredients",
+      dimensions: "10 pieces per pack",
+      weight: "100mg total",
+      color: ["Assorted"]
     }
   },
   {
     id: "4",
-    name: "Minimalist Analog Watch",
-    description: "Clean design timepiece with Italian leather strap.",
-    price: 149.00,
-    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Accessories",
+    name: "Vape Cartridge",
+    description: "Premium distillate vape cartridge with natural terpenes.",
+    price: 49.00,
+    image: "https://images.unsplash.com/photo-1588931950485-f6192c50d08b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Concentrates",
     featured: true,
     details: {
-      material: "Stainless Steel, Italian Leather",
-      dimensions: "40mm case",
-      weight: "0.2 lbs",
-      color: ["Black/Tan", "Silver/Brown", "Gold/Black"]
+      material: "Glass and Metal",
+      dimensions: "510 Thread",
+      weight: "1g",
+      color: ["Gold", "Clear"]
     }
   },
   {
     id: "5",
-    name: "Walnut Cutting Board",
-    description: "Solid walnut cutting board with juice groove.",
-    price: 59.99,
-    image: "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Kitchen",
+    name: "Hemp-Infused Salve",
+    description: "Soothing topical cream for localized relief.",
+    price: 35.99,
+    image: "https://images.unsplash.com/photo-1618514613561-6a450a31c15a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Topicals",
     details: {
-      material: "Solid Walnut",
-      dimensions: "18\" × 12\" × 1.5\"",
-      weight: "3.6 lbs",
+      material: "All-Natural",
+      dimensions: "2oz Container",
+      weight: "2 oz",
     }
   },
   {
     id: "6",
-    name: "Linen Bedding Set",
-    description: "Stonewashed linen duvet cover and pillowcases.",
-    price: 220.00,
-    image: "https://images.unsplash.com/photo-1629949009765-40fc74c9ec61?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Bedding",
+    name: "CBD Sleep Tincture",
+    description: "Specialized formula with melatonin for improved sleep.",
+    price: 58.00,
+    image: "https://images.unsplash.com/photo-1556762129-f428e094e5de?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Tinctures",
     details: {
-      material: "100% European Flax Linen",
-      dimensions: "Queen/King Available",
-      color: ["White", "Oatmeal", "Sage", "Terracotta"]
+      material: "MCT Oil Base",
+      dimensions: "30ml Dropper Bottle",
+      color: ["Dark Amber"]
     }
   },
   {
     id: "7",
-    name: "Ceramic Plant Pot",
-    description: "Minimalist ceramic planter with drainage hole.",
-    price: 38.00,
-    image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Home",
+    name: "Cannabis Terpene Diffuser",
+    description: "Aromatherapy device using natural cannabis terpenes.",
+    price: 45.00,
+    image: "https://images.unsplash.com/photo-1532604363484-a2d39572608b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Accessories",
     details: {
       material: "Ceramic",
       dimensions: "6\" × 6\" × 6\"",
       weight: "1.8 lbs",
-      color: ["White", "Black", "Terracotta"]
+      color: ["White", "Black", "Green"]
     }
   },
   {
     id: "8",
-    name: "Brass Desk Organizer",
-    description: "Elegant brass desk organizer for pens and small items.",
-    price: 45.00,
-    image: "https://images.unsplash.com/photo-1544247341-5c3cf5ea7378?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    category: "Office",
+    name: "Hemp Rolling Papers",
+    description: "Premium organic hemp rolling papers with natural gum.",
+    price: 12.00,
+    image: "https://images.unsplash.com/photo-1560999448-1be371c19ef7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    category: "Accessories",
     details: {
-      material: "Solid Brass",
-      dimensions: "8\" × 4\" × 2\"",
-      weight: "1.2 lbs",
+      material: "Organic Hemp",
+      dimensions: "King Size",
+      weight: "14g",
     }
   }
 ];
