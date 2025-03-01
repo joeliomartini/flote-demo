@@ -249,7 +249,7 @@ const Checkout = () => {
                         htmlFor={`address-${address.id}`}
                         className={cn(
                           "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
-                          selectedAddress === address.id && "ring-2 ring-primary/30 border-primary/50"
+                          selectedAddress === address.id && "ring-1 ring-primary border-primary"
                         )}
                       >
                         <div className="absolute top-3 right-3">
@@ -259,7 +259,7 @@ const Checkout = () => {
                           <div className="font-medium">
                             {address.isDefault && <span className="inline-block bg-primary/10 text-xs rounded px-2 py-0.5 mr-2">Default</span>}
                           </div>
-                          <div className="text-sm">
+                          <div className="text-sm text-muted-foreground">
                             {address.line1}
                             {address.line2 && `, ${address.line2}`}
                             <br />
@@ -384,7 +384,7 @@ const Checkout = () => {
                       htmlFor="standard-shipping"
                       className={cn(
                         "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
-                        fulfillmentMethod === "standard" && "ring-2 ring-primary/30 border-primary/50"
+                        fulfillmentMethod === "standard" && "ring-1 ring-primary border-primary"
                       )}
                     >
                       <div className="absolute top-3 right-3">
@@ -407,7 +407,7 @@ const Checkout = () => {
                       htmlFor="express-shipping"
                       className={cn(
                         "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
-                        fulfillmentMethod === "express" && "ring-2 ring-primary/30 border-primary/50"
+                        fulfillmentMethod === "express" && "ring-1 ring-primary border-primary"
                       )}
                     >
                       <div className="absolute top-3 right-3">
@@ -443,7 +443,7 @@ const Checkout = () => {
                       htmlFor="cash-payment"
                       className={cn(
                         "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
-                        paymentMethod === "cash" && "ring-2 ring-primary/30 border-primary/50"
+                        paymentMethod === "cash" && "ring-1 ring-primary border-primary"
                       )}
                     >
                       <div className="absolute top-3 right-3">
@@ -466,7 +466,7 @@ const Checkout = () => {
                       htmlFor="ach-payment"
                       className={cn(
                         "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
-                        paymentMethod === "ach" && "ring-2 ring-primary/30 border-primary/50"
+                        paymentMethod === "ach" && "ring-1 ring-primary border-primary"
                       )}
                     >
                       <div className="absolute top-3 right-3">
@@ -489,7 +489,7 @@ const Checkout = () => {
                       htmlFor="credit-payment"
                       className={cn(
                         "flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative cursor-pointer",
-                        paymentMethod === "credit" && "ring-2 ring-primary/30 border-primary/50"
+                        paymentMethod === "credit" && "ring-1 ring-primary border-primary"
                       )}
                     >
                       <div className="absolute top-3 right-3">
