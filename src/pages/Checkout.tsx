@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -51,7 +50,6 @@ const Checkout = () => {
   });
   const [addressModalOpen, setAddressModalOpen] = useState(false);
 
-  // Default address for demo purposes
   const defaultAddress: Address = {
     id: "default",
     line1: "416 N Ida Ave",
@@ -142,7 +140,6 @@ const Checkout = () => {
     setSelectedAddress(newAddr.id);
     setAddressModalOpen(false);
     
-    // Reset form
     setNewAddress({
       line1: "",
       line2: "",
@@ -248,9 +245,12 @@ const Checkout = () => {
                     {addresses.map(address => (
                       <div 
                         key={address.id}
-                        className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors"
+                        className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative"
                       >
-                        <div className="flex-1">
+                        <div className="absolute top-3 right-3">
+                          <RadioGroupItem value={address.id} iconPosition="right" />
+                        </div>
+                        <div className="flex-1 pr-8">
                           <div className="font-medium">
                             {address.isDefault && <span className="inline-block bg-primary/10 text-xs rounded px-2 py-0.5 mr-2">Default</span>}
                           </div>
@@ -260,9 +260,6 @@ const Checkout = () => {
                             <br />
                             {address.city}, {address.state} {address.zip}
                           </div>
-                        </div>
-                        <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center ml-3">
-                          <RadioGroupItem value={address.id} iconPosition="right" />
                         </div>
                       </div>
                     ))}
@@ -378,8 +375,11 @@ const Checkout = () => {
                     onValueChange={setFulfillmentMethod}
                     className="space-y-2"
                   >
-                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                      <div className="absolute top-3 right-3">
+                        <RadioGroupItem value="standard" iconPosition="right" />
+                      </div>
+                      <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
                           <Truck className="h-5 w-5 text-foreground" />
                         </div>
@@ -390,13 +390,13 @@ const Checkout = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
-                        <RadioGroupItem value="standard" iconPosition="right" />
-                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                      <div className="absolute top-3 right-3">
+                        <RadioGroupItem value="express" iconPosition="right" />
+                      </div>
+                      <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-foreground">
                             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -408,9 +408,6 @@ const Checkout = () => {
                             1-2 business days
                           </div>
                         </div>
-                      </div>
-                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
-                        <RadioGroupItem value="express" iconPosition="right" />
                       </div>
                     </div>
                   </RadioGroup>
@@ -425,8 +422,11 @@ const Checkout = () => {
                     onValueChange={setPaymentMethod}
                     className="space-y-2"
                   >
-                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                      <div className="absolute top-3 right-3">
+                        <RadioGroupItem value="cash" iconPosition="right" />
+                      </div>
+                      <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
                           <CreditCard className="h-5 w-5 text-foreground" />
                         </div>
@@ -437,13 +437,13 @@ const Checkout = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
-                        <RadioGroupItem value="cash" iconPosition="right" />
-                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                      <div className="absolute top-3 right-3">
+                        <RadioGroupItem value="ach" iconPosition="right" />
+                      </div>
+                      <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
                           <Landmark className="h-5 w-5 text-foreground" />
                         </div>
@@ -454,13 +454,13 @@ const Checkout = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
-                        <RadioGroupItem value="ach" iconPosition="right" />
-                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors relative">
+                      <div className="absolute top-3 right-3">
+                        <RadioGroupItem value="credit" iconPosition="right" />
+                      </div>
+                      <div className="flex items-center gap-3 flex-1 pr-8">
                         <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
                           <Clock className="h-5 w-5 text-foreground" />
                         </div>
@@ -470,9 +470,6 @@ const Checkout = () => {
                             Flexible payment option for qualified customers
                           </div>
                         </div>
-                      </div>
-                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
-                        <RadioGroupItem value="credit" iconPosition="right" />
                       </div>
                     </div>
                   </RadioGroup>
