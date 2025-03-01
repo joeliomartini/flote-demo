@@ -7,6 +7,11 @@ export interface Product {
   image: string;
   category: string;
   featured?: boolean;
+  brand?: string;
+  type?: "Indica" | "Sativa" | "Hybrid" | string;
+  thcContent?: string;
+  weight?: string;
+  packageQuantity?: number;
   details?: {
     material?: string;
     dimensions?: string;
@@ -24,6 +29,11 @@ export const products: Product[] = [
     image: "https://images.unsplash.com/photo-1614927252455-ea5c8a3a4b9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Tinctures",
     featured: true,
+    brand: "HealWell",
+    type: "Hybrid",
+    thcContent: "2%",
+    weight: "30ml",
+    packageQuantity: 1,
     details: {
       material: "Full Spectrum Extract",
       dimensions: "30ml Bottle",
@@ -38,6 +48,11 @@ export const products: Product[] = [
     price: 38.00,
     image: "https://images.unsplash.com/photo-1603909223429-69bb7db0c942?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Flower",
+    brand: "CloudNine",
+    type: "Indica",
+    thcContent: "22%",
+    weight: "1g each",
+    packageQuantity: 5,
     details: {
       material: "Indoor Grown",
       dimensions: "Standard Size",
@@ -52,6 +67,11 @@ export const products: Product[] = [
     price: 24.50,
     image: "https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Edibles",
+    brand: "SweetRelief",
+    type: "Hybrid",
+    thcContent: "10mg per piece",
+    weight: "100mg total",
+    packageQuantity: 10,
     details: {
       material: "Natural Ingredients",
       dimensions: "10 pieces per pack",
@@ -67,6 +87,11 @@ export const products: Product[] = [
     image: "https://images.unsplash.com/photo-1579119165870-8296f3157e38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Concentrates",
     featured: true,
+    brand: "VaporPath",
+    type: "Sativa",
+    thcContent: "85%",
+    weight: "1g",
+    packageQuantity: 1,
     details: {
       material: "Glass and Metal",
       dimensions: "510 Thread",
@@ -81,6 +106,11 @@ export const products: Product[] = [
     price: 35.99,
     image: "https://images.unsplash.com/photo-1616690248366-8b93fab0bf95?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Topicals",
+    brand: "NatureCure",
+    type: "CBD",
+    thcContent: "0.3%",
+    weight: "2oz",
+    packageQuantity: 1,
     details: {
       material: "All-Natural",
       dimensions: "2oz Container",
@@ -94,6 +124,11 @@ export const products: Product[] = [
     price: 58.00,
     image: "https://images.unsplash.com/photo-1611932843289-31e42dc42c83?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Tinctures",
+    brand: "DreamWell",
+    type: "CBD",
+    thcContent: "1%",
+    weight: "30ml",
+    packageQuantity: 1,
     details: {
       material: "MCT Oil Base",
       dimensions: "30ml Dropper Bottle",
@@ -107,6 +142,9 @@ export const products: Product[] = [
     price: 45.00,
     image: "https://images.unsplash.com/photo-1614142729092-ada8560bae78?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Accessories",
+    brand: "AromaTech",
+    type: "Accessory",
+    packageQuantity: 1,
     details: {
       material: "Ceramic",
       dimensions: "6\" × 6\" × 6\"",
@@ -121,6 +159,9 @@ export const products: Product[] = [
     price: 12.00,
     image: "https://images.unsplash.com/photo-1580251645806-90408ee84aae?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     category: "Accessories",
+    brand: "PureRoll",
+    type: "Accessory",
+    packageQuantity: 50,
     details: {
       material: "Organic Hemp",
       dimensions: "King Size",
