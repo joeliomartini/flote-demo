@@ -10,6 +10,7 @@ import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapP
 import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface UserProfile {
   first_name?: string;
