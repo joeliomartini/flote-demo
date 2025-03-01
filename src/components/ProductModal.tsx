@@ -84,37 +84,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               </div>
               
               <p className="text-muted-foreground mb-4">{product.description}</p>
-              
-              {/* Product attributes */}
-              <div className="space-y-3 mb-4">
-                {product.brand && (
-                  <div className="flex gap-2">
-                    <span className="text-sm font-medium">Brand:</span>
-                    <span className="text-sm text-muted-foreground">{product.brand}</span>
-                  </div>
-                )}
-                
-                {product.thcContent && (
-                  <div className="flex gap-2">
-                    <span className="text-sm font-medium">THC Content:</span>
-                    <span className="text-sm text-muted-foreground">{product.thcContent}</span>
-                  </div>
-                )}
-                
-                {product.weight && (
-                  <div className="flex gap-2">
-                    <span className="text-sm font-medium">Weight:</span>
-                    <span className="text-sm text-muted-foreground">{product.weight}</span>
-                  </div>
-                )}
-                
-                {product.packageQuantity && product.packageQuantity > 1 && (
-                  <div className="flex gap-2">
-                    <span className="text-sm font-medium">Package Quantity:</span>
-                    <span className="text-sm text-muted-foreground">{product.packageQuantity} items</span>
-                  </div>
-                )}
-              </div>
             </div>
             
             <div className="space-y-4">
@@ -140,48 +109,81 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               <div className="mt-4">
                 <Accordion type="single" collapsible className="w-full">
                   {/* Product Details Accordion */}
-                  {product.details && (
-                    <AccordionItem value="details">
-                      <AccordionTrigger className="text-sm">Additional Details</AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-3 text-sm">
-                          {product.details.material && (
-                            <div className="flex gap-2">
-                              <span className="font-medium">Material:</span>
-                              <span className="text-muted-foreground">{product.details.material}</span>
+                  <AccordionItem value="details">
+                    <AccordionTrigger className="text-sm">Additional Details</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 text-sm">
+                        {product.brand && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Brand:</span>
+                            <span className="text-muted-foreground">{product.brand}</span>
+                          </div>
+                        )}
+                        
+                        {product.type && product.type !== "Accessory" && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Type:</span>
+                            <span className="text-muted-foreground">{product.type}</span>
+                          </div>
+                        )}
+                        
+                        {product.thcContent && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">THC Content:</span>
+                            <span className="text-muted-foreground">{product.thcContent}</span>
+                          </div>
+                        )}
+                        
+                        {product.weight && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Weight:</span>
+                            <span className="text-muted-foreground">{product.weight}</span>
+                          </div>
+                        )}
+                        
+                        {product.packageQuantity && product.packageQuantity > 1 && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Package Quantity:</span>
+                            <span className="text-muted-foreground">{product.packageQuantity} items</span>
+                          </div>
+                        )}
+                        
+                        {product.details?.material && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Material:</span>
+                            <span className="text-muted-foreground">{product.details.material}</span>
+                          </div>
+                        )}
+                        
+                        {product.details?.dimensions && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Dimensions:</span>
+                            <span className="text-muted-foreground">{product.details.dimensions}</span>
+                          </div>
+                        )}
+                        
+                        {product.details?.weight && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Weight:</span>
+                            <span className="text-muted-foreground">{product.details.weight}</span>
+                          </div>
+                        )}
+                        
+                        {product.details?.color && (
+                          <div className="space-y-2">
+                            <span className="font-medium">Available Colors:</span>
+                            <div className="flex flex-wrap gap-2">
+                              {product.details.color.map((color) => (
+                                <span key={color} className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                                  {color}
+                                </span>
+                              ))}
                             </div>
-                          )}
-                          
-                          {product.details.dimensions && (
-                            <div className="flex gap-2">
-                              <span className="font-medium">Dimensions:</span>
-                              <span className="text-muted-foreground">{product.details.dimensions}</span>
-                            </div>
-                          )}
-                          
-                          {product.details.weight && (
-                            <div className="flex gap-2">
-                              <span className="font-medium">Weight:</span>
-                              <span className="text-muted-foreground">{product.details.weight}</span>
-                            </div>
-                          )}
-                          
-                          {product.details.color && (
-                            <div className="space-y-2">
-                              <span className="font-medium">Available Colors:</span>
-                              <div className="flex flex-wrap gap-2">
-                                {product.details.color.map((color) => (
-                                  <span key={color} className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                                    {color}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
+                          </div>
+                        )}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
                   
                   {/* Usage Instructions Accordion - Static content */}
                   <AccordionItem value="usage">
