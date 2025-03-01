@@ -7,11 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin } from "lucide-react";
+import { ShoppingBag, ChevronLeft, CreditCard, Landmark, Clock, PlusCircle, MapPin, Truck, ZapIcon } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface UserProfile {
   first_name?: string;
@@ -38,6 +37,7 @@ const Checkout = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("cash");
+  const [fulfillmentMethod, setFulfillmentMethod] = useState<string>("standard");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [bypassCartCheck] = useState(location.state?.bypassCheck || true);
   const [selectedAddress, setSelectedAddress] = useState<string>("default");
@@ -218,30 +218,20 @@ const Checkout = () => {
               <form onSubmit={handleSubmitOrder}>
                 <div className="mb-8">
                   <h2 className="text-lg font-medium mb-4">Contact Information</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First name</Label>
-                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
-                        {userProfile.first_name || "Test"}
+                  <div className="bg-secondary/30 rounded-lg p-4 space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-1">Name</div>
+                        <div className="font-medium">{userProfile.first_name} {userProfile.last_name}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-1">Email</div>
+                        <div className="font-medium">{userProfile.email}</div>
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="lastName">Last name</Label>
-                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
-                        {userProfile.last_name || "User"}
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email</Label>
-                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
-                        {userProfile.email}
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">Phone</Label>
-                      <div className="mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
-                        {userProfile.phone || "555-123-4567"}
-                      </div>
+                      <div className="text-sm text-muted-foreground mb-1">Phone</div>
+                      <div className="font-medium">{userProfile.phone}</div>
                     </div>
                   </div>
                 </div>
@@ -263,16 +253,17 @@ const Checkout = () => {
                         <div className="flex-1">
                           <div className="font-medium">
                             {address.isDefault && <span className="inline-block bg-primary/10 text-xs rounded px-2 py-0.5 mr-2">Default</span>}
-                            Shipping Address
                           </div>
-                          <div className="text-sm text-muted-foreground mt-1">
+                          <div className="text-sm mt-1">
                             {address.line1}
                             {address.line2 && `, ${address.line2}`}
                             <br />
                             {address.city}, {address.state} {address.zip}
                           </div>
                         </div>
-                        <RadioGroupItem value={address.id} className="ml-3" />
+                        <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center ml-3">
+                          <RadioGroupItem value={address.id} iconPosition="right" />
+                        </div>
                       </div>
                     ))}
                   </RadioGroup>
@@ -380,6 +371,53 @@ const Checkout = () => {
 
                 <Separator className="my-6" />
 
+                <div className="mb-8">
+                  <h2 className="text-lg font-medium mb-4">Fulfillment Method</h2>
+                  <RadioGroup 
+                    value={fulfillmentMethod} 
+                    onValueChange={setFulfillmentMethod}
+                    className="space-y-2"
+                  >
+                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
+                          <Truck className="h-5 w-5 text-foreground" />
+                        </div>
+                        <div>
+                          <div className="font-medium">Standard Shipping</div>
+                          <div className="text-sm">
+                            3-5 business days
+                          </div>
+                        </div>
+                      </div>
+                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
+                        <RadioGroupItem value="standard" iconPosition="right" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-foreground">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-medium">Express Delivery</div>
+                          <div className="text-sm">
+                            1-2 business days
+                          </div>
+                        </div>
+                      </div>
+                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
+                        <RadioGroupItem value="express" iconPosition="right" />
+                      </div>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <Separator className="my-6" />
+
                 <div>
                   <h2 className="text-lg font-medium mb-4">Payment Method</h2>
                   <RadioGroup 
@@ -389,41 +427,53 @@ const Checkout = () => {
                   >
                     <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
-                        <CreditCard className="h-5 w-5 text-muted-foreground" />
+                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
+                          <CreditCard className="h-5 w-5 text-foreground" />
+                        </div>
                         <div>
                           <div className="font-medium">Cash on Delivery</div>
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-sm">
                             Pay when your order is delivered
                           </div>
                         </div>
                       </div>
-                      <RadioGroupItem value="cash" className="ml-3" />
+                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
+                        <RadioGroupItem value="cash" iconPosition="right" />
+                      </div>
                     </div>
                     
                     <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
-                        <Landmark className="h-5 w-5 text-muted-foreground" />
+                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
+                          <Landmark className="h-5 w-5 text-foreground" />
+                        </div>
                         <div>
                           <div className="font-medium">ACH Payment</div>
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-sm">
                             Direct bank transfer
                           </div>
                         </div>
                       </div>
-                      <RadioGroupItem value="ach" className="ml-3" />
+                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
+                        <RadioGroupItem value="ach" iconPosition="right" />
+                      </div>
                     </div>
                     
                     <div className="flex items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
-                        <Clock className="h-5 w-5 text-muted-foreground" />
+                        <div className="h-10 w-10 rounded-md bg-secondary/70 flex items-center justify-center">
+                          <Clock className="h-5 w-5 text-foreground" />
+                        </div>
                         <div>
                           <div className="font-medium">Open a Line of Credit</div>
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-sm">
                             Flexible payment option for qualified customers
                           </div>
                         </div>
                       </div>
-                      <RadioGroupItem value="credit" className="ml-3" />
+                      <div className="h-9 w-9 rounded-md bg-secondary/70 flex items-center justify-center">
+                        <RadioGroupItem value="credit" iconPosition="right" />
+                      </div>
                     </div>
                   </RadioGroup>
                 </div>
