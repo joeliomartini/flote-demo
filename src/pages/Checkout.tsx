@@ -141,6 +141,11 @@ const Checkout = () => {
     try {
       setCameraPermissionDenied(false);
       
+      // Stop any existing stream before starting a new one
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      
       const mediaStream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' },
         audio: false 
@@ -189,6 +194,8 @@ const Checkout = () => {
 
   const retakePhoto = () => {
     setCapturedImage(null);
+    // Restart the camera after setting capturedImage to null
+    startCamera();
   };
 
   const confirmPhoto = () => {
