@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -133,8 +134,8 @@
 
   /* Radio button styles */
   .RadioGroupItem {
-    height: 16px;
-    width: 16px;
+    height: 20px;
+    width: 20px;
     flex-shrink: 0;
   }
 
