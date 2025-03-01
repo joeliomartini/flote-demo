@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import AuthModal from "./AuthModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const CartDrawer: React.FC = () => {
   const {
@@ -21,6 +21,7 @@ const CartDrawer: React.FC = () => {
     itemCount
   } = useCart();
 
+  const navigate = useNavigate();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
@@ -40,15 +41,9 @@ const CartDrawer: React.FC = () => {
         return;
       }
       
-      // Here you would create an order in your database
-      // For now, we'll just show a success message
-      toast.success("Proceeding to checkout!", {
-        description: "You've successfully authenticated."
-      });
-      
-      // In a real app, you'd redirect to a checkout page or process the order
-      console.log("Creating order for user", user.id);
-      console.log("Order items:", items);
+      // Close cart and navigate to checkout
+      closeCart();
+      navigate("/checkout");
       
     } catch (error) {
       console.error("Checkout error:", error);
