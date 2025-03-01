@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -96,23 +97,27 @@ const Checkout = () => {
           .eq('id', user.id)
           .single();
 
-        if (error) {
-          setUserProfile({
-            first_name: data?.first_name || "Example",
-            last_name: data?.last_name || "Customer",
-            phone: data?.phone || "406-555-8901",
-            address: data?.address || "1842 Pine Ridge Road",
-            email: user.email || "customer@example.com"
-          });
+        // Set default placeholder values if the user is authenticated but has incomplete profile
+        const placeholderProfile = {
+          first_name: "Example",
+          last_name: "Customer",
+          phone: "406-555-8901",
+          address: "1842 Pine Ridge Road",
+          email: user.email || "customer@example.com"
+        };
+
+        if (error || !data) {
+          setUserProfile(placeholderProfile);
           return;
         }
         
+        // Use placeholder values for any missing profile fields
         setUserProfile({
-          first_name: data?.first_name || "",
-          last_name: data?.last_name || "",
-          phone: data?.phone || "",
-          address: data?.address || "",
-          email: user.email || ""
+          first_name: data.first_name || placeholderProfile.first_name,
+          last_name: data.last_name || placeholderProfile.last_name,
+          phone: data.phone || placeholderProfile.phone,
+          address: data.address || placeholderProfile.address,
+          email: user.email || placeholderProfile.email
         });
       } catch (error) {
         console.error("Error fetching user profile:", error);
