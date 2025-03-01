@@ -1,9 +1,6 @@
 
-
-import React, { useState, useMemo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Product } from "../data/products";
-import { fetchProducts, migrateProductsToSupabase } from "../services/productService";
+import React, { useState, useMemo } from "react";
+import { Product, products } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
 import CartDrawer from "../components/CartDrawer";
@@ -12,7 +9,6 @@ import { CartProvider } from "../context/CartContext";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
 
 const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -20,46 +16,10 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Fetch products from Supabase
-  const { data: products = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
-  });
-
-  // Run migration on component mount
-  useEffect(() => {
-    const runMigration = async () => {
-      try {
-        console.log("Attempting to migrate products...");
-        const migrationResult = await migrateProductsToSupabase();
-        if (migrationResult) {
-          toast.success("Products successfully migrated to database!");
-          // Refetch products after migration
-          refetch();
-        } else {
-          toast.error("Failed to migrate products to database. Check console for details.");
-        }
-      } catch (err) {
-        console.error("Migration error:", err);
-        toast.error(`Migration error: ${err instanceof Error ? err.message : "Unknown error"}`);
-      }
-    };
-    
-    runMigration();
-  }, [refetch]);
-
-  // Show error toast if fetch fails
-  React.useEffect(() => {
-    if (error) {
-      toast.error("Failed to load products. Please try again later.");
-      console.error("Product fetch error:", error);
-    }
-  }, [error]);
-
-  // Get unique categories
+  // Get unique categories from local data
   const categories = useMemo(() => {
     return Array.from(new Set(products.map(product => product.category)));
-  }, [products]);
+  }, []);
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product);
@@ -96,7 +56,7 @@ const Index = () => {
       
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategories, products]);
+  }, [searchQuery, selectedCategories]);
 
   return (
     <CartProvider>
@@ -158,28 +118,14 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Results count and loading state */}
+          {/* Results count */}
           <div className="mb-6">
-            {isLoading ? (
-              <p className="text-sm text-muted-foreground">Loading products...</p>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Showing {filteredProducts.length} of {products.length} products
-              </p>
-            )}
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredProducts.length} of {products.length} products
+            </p>
           </div>
 
-          {isLoading ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {[...Array(8)].map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="aspect-square bg-muted rounded-md mb-2"></div>
-                  <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-muted rounded w-1/2"></div>
-                </div>
-              ))}
-            </div>
-          ) : filteredProducts.length === 0 ? (
+          {filteredProducts.length === 0 ? (
             <div className="rounded-lg border border-dashed p-8 text-center">
               <p className="text-muted-foreground">No products found matching your criteria.</p>
               <button 
