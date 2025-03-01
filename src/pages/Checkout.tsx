@@ -271,7 +271,7 @@ const Checkout = () => {
                           </div>
                           <div>
                             {address.company && (
-                              <div className="text-sm text-muted-foreground">{address.company}</div>
+                              <div className="text-sm font-medium text-foreground">{address.company}</div>
                             )}
                             <div className="text-sm text-muted-foreground">
                               {address.line1}
