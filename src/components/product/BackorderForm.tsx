@@ -41,7 +41,7 @@ const BackorderForm: React.FC<BackorderFormProps> = ({ productName }) => {
   };
   
   return (
-    <div className="mt-4 p-4 border border-amber-200 bg-amber-50 rounded-md">
+    <div className="p-4 border border-amber-200 bg-amber-50 rounded-md">
       <div>
         <h4 className="font-medium text-amber-800 flex items-center gap-1.5">
           <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0" />

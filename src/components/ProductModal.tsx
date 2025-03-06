@@ -76,15 +76,17 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </div>
             
             {/* Product Actions or Backorder Form */}
-            {product.backordered ? (
-              <BackorderForm productName={product.name} />
-            ) : (
-              <ProductActions 
-                quantity={quantity}
-                onQuantityChange={setQuantity}
-                onAddToCart={handleAddToCart}
-              />
-            )}
+            <div className="mt-0">
+              {product.backordered ? (
+                <BackorderForm productName={product.name} />
+              ) : (
+                <ProductActions 
+                  quantity={quantity}
+                  onQuantityChange={setQuantity}
+                  onAddToCart={handleAddToCart}
+                />
+              )}
+            </div>
             
             {/* Product Details Accordion */}
             <div className="mt-4">
