@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface ProductPriceCardProps {
   price: number;
@@ -20,11 +21,10 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
   backordered
 }) => {
   const isOutOfStock = inventory === 0 || inventory === null || backordered;
-  const cardClassName = "mt-3 mb-4 shadow-sm";
 
   return (
-    <Card className={cardClassName}>
-      <CardContent className="p-3">
+    <div className="mt-3 mb-4">
+      <div className="p-3">
         <div className="flex flex-col gap-1">
           {/* Price section with pack unit type */}
           <div className="flex items-baseline gap-2">
@@ -54,8 +54,8 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
             </div>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
