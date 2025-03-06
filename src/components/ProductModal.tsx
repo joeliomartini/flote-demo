@@ -1,8 +1,7 @@
 
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { X, AlertTriangle } from "lucide-react";
+import { X } from "lucide-react";
 import { Product } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -60,14 +59,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             <div className="flex-1 overflow-auto pr-2">
               {/* Breadcrumb-style category hierarchy */}
               <ProductBreadcrumb categoryPath={product.categoryPath} />
-              
-              {/* Backordered badge if applicable */}
-              {product.backordered && (
-                <Badge variant="destructive" className="mb-3 flex items-center gap-1">
-                  <AlertTriangle className="h-3 w-3" />
-                  <span>Backordered</span>
-                </Badge>
-              )}
               
               <h2 className="text-2xl font-medium tracking-tight">{product.name}</h2>
               

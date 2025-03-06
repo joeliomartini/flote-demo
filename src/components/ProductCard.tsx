@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             </span>
           )}
           {product.backordered && (
-            <Badge variant="destructive" className="flex items-center gap-1">
+            <Badge className="bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 flex items-center gap-1">
               <AlertTriangle className="h-3 w-3" />
               <span>Backordered</span>
             </Badge>

@@ -42,35 +42,35 @@ const BackorderForm: React.FC<BackorderFormProps> = ({ productName }) => {
   
   return (
     <div className="mt-4 p-4 border border-amber-200 bg-amber-50 rounded-md">
-      <div className="flex items-start gap-3">
-        <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <h4 className="font-medium text-amber-800">This item is currently backordered</h4>
-          <p className="text-sm text-amber-700 mt-1">
-            Get notified when this item is back in stock by signing up below.
-          </p>
+      <div>
+        <h4 className="font-medium text-amber-800 flex items-center gap-1.5">
+          <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0" />
+          This item is currently backordered
+        </h4>
+        <p className="text-sm text-amber-700 mt-1">
+          Get notified when this item is back in stock by signing up below.
+        </p>
+        
+        <form onSubmit={handleSubmit} className="mt-3 space-y-3">
+          <Input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="bg-white border-amber-200"
+            required
+          />
           
-          <form onSubmit={handleSubmit} className="mt-3 space-y-3">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="bg-white border-amber-200"
-              required
-            />
-            
-            <Button 
-              type="submit" 
-              className="w-full gap-2" 
-              disabled={isSubmitting}
-              variant="outline"
-            >
-              <Bell className="h-4 w-4" />
-              {isSubmitting ? "Submitting..." : "Notify me when in stock"}
-            </Button>
-          </form>
-        </div>
+          <Button 
+            type="submit" 
+            className="w-full gap-2" 
+            disabled={isSubmitting}
+            variant="outline"
+          >
+            <Bell className="h-4 w-4" />
+            {isSubmitting ? "Submitting..." : "Notify me when in stock"}
+          </Button>
+        </form>
       </div>
     </div>
   );
