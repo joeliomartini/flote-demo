@@ -152,7 +152,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
                 onChange={(e) => setOtp(e.target.value)}
                 maxLength={6}
                 disabled={loading}
-                className="text-center text-lg tracking-widest"
                 required
               />
             </div>
