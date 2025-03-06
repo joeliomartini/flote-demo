@@ -38,6 +38,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   // Get pack unit display name (lowercase)
   const packUnit = getPackUnit(product.pack_unit, product.packageQuantity);
+  
+  console.log("Product modal rendering:", {
+    product,
+    pricePerItem,
+    packUnit,
+    inventory: product.inventory,
+    backordered: product.backordered
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

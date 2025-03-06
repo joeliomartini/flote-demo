@@ -1,30 +1,42 @@
 
 import React from "react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { ChevronRight } from "lucide-react";
 
-interface Category {
-  id: string;
-  name: string;
-}
-
 interface ProductBreadcrumbProps {
-  categoryPath?: Array<Category>;
+  categoryPath?: Array<{ id: string; name: string }>;
 }
 
 const ProductBreadcrumb: React.FC<ProductBreadcrumbProps> = ({ categoryPath }) => {
   if (!categoryPath || categoryPath.length === 0) return null;
-
+  
   return (
-    <div className="mb-3 flex items-center text-xs text-muted-foreground">
-      {categoryPath.map((cat, index) => (
-        <React.Fragment key={cat.id}>
-          <span className="font-medium">{cat.name}</span>
-          {index < categoryPath.length - 1 && (
-            <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/70" />
-          )}
-        </React.Fragment>
-      ))}
-    </div>
+    <Breadcrumb className="mb-3">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Shop</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator>
+          <ChevronRight className="h-4 w-4" />
+        </BreadcrumbSeparator>
+        
+        {categoryPath.map((category, index) => (
+          <React.Fragment key={category.id}>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/category/${category.id}`}>
+                {category.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            
+            {index < categoryPath.length - 1 && (
+              <BreadcrumbSeparator>
+                <ChevronRight className="h-4 w-4" />
+              </BreadcrumbSeparator>
+            )}
+          </React.Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
   );
 };
 
