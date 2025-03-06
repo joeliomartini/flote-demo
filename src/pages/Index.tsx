@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from "react";
 import { Product } from "../data/products";
 import ProductModal from "../components/ProductModal";
@@ -19,7 +18,6 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Get hierarchical categories instead of flat categories
   const { data: allCategories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories
@@ -53,7 +51,6 @@ const Index = () => {
     setSelectedCategories([]);
   };
 
-  // Set up event listener for resetFilters from ProductGrid component
   useEffect(() => {
     const handleResetFilters = () => resetFilters();
     window.addEventListener('resetFilters', handleResetFilters);
@@ -65,19 +62,18 @@ const Index = () => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                            (product.description?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
       
-      // Check if product matches any selected category or its subcategories
       const matchesCategory = () => {
         if (selectedCategories.length === 0) return true;
         
-        // Check direct category match
         if (selectedCategories.includes(product.category)) return true;
         
-        // Find selected parent categories that have subcategories
         for (const category of allCategories) {
-          if (selectedCategories.includes(category.name) && category.subcategories) {
-            // Check if product's category is a subcategory of this selected parent
-            const isSubcategory = category.subcategories.some(sub => sub.name === product.category);
-            if (isSubcategory) return true;
+          if (selectedCategories.includes(category.name) && !category.parent_id) {
+            const matchingSubcategories = allCategories.filter(cat => 
+              cat.parent_id === category.id && cat.name === product.category
+            );
+            
+            if (matchingSubcategories.length > 0) return true;
           }
         }
         

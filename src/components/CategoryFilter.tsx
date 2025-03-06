@@ -1,5 +1,7 @@
+
 import React, { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Category } from "@/services/categoryService";
 
 interface CategoryFilterProps {
@@ -36,6 +38,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const displayedCategories = useMemo(() => {
     // If a parent category is selected, show its subcategories
     if (selectedParentCategory) {
+      // Get all subcategories by finding categories with parent_id matching the selected parent
       return allCategories.filter(cat => 
         cat.parent_id === selectedParentCategory.id || cat.id === selectedParentCategory.id
       );
@@ -45,22 +48,13 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   }, [selectedParentCategory, allCategories]);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-medium">
-          {selectedParentCategory 
-            ? `Filter by ${selectedParentCategory.name} subcategories:` 
-            : "Filter by category:"}
-        </h2>
-        {selectedCategories.length > 0 && (
-          <button 
-            onClick={resetFilters}
-            className="text-xs text-primary hover:underline"
-          >
-            Reset filters
-          </button>
-        )}
-      </div>
+    <div className="space-y-3">
+      <h2 className="text-sm font-medium">
+        {selectedParentCategory 
+          ? `Filter by ${selectedParentCategory.name} subcategories:` 
+          : "Filter by category:"}
+      </h2>
+      
       <div className="flex flex-wrap gap-2">
         {displayedCategories.map(category => (
           <Badge
@@ -73,6 +67,17 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           </Badge>
         ))}
       </div>
+      
+      {selectedCategories.length > 0 && (
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={resetFilters}
+          className="mt-2 text-xs"
+        >
+          Reset filters
+        </Button>
+      )}
     </div>
   );
 };
