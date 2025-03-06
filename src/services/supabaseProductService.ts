@@ -46,7 +46,7 @@ export const getProducts = async (): Promise<Product[]> => {
       weight: item.weight,
       packageQuantity: item.package_quantity,
       type: item.type,
-      details: item.details
+      details: typeof item.details === 'object' ? item.details : {}
     };
     return product;
   });
@@ -98,7 +98,7 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     weight: data.weight,
     packageQuantity: data.package_quantity,
     type: data.type,
-    details: data.details
+    details: typeof data.details === 'object' ? data.details : {}
   };
 
   return product;

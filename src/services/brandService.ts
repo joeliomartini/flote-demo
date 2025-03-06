@@ -97,7 +97,7 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
       weight: item.weight,
       packageQuantity: item.package_quantity,
       type: item.type,
-      details: item.details
+      details: typeof item.details === 'object' ? item.details : {}
     };
     return product;
   });
