@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { 
   Dialog,
@@ -156,9 +155,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
                   onChange={setOtp}
                   disabled={loading}
                   className="w-full"
-                  containerClassName="w-full justify-between gap-2"
+                  containerClassName="w-full justify-center"
                 >
-                  <InputOTPGroup className="w-full grid grid-cols-6 gap-2">
+                  <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
                     <InputOTPSlot index={2} />
