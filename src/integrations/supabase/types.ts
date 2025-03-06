@@ -159,6 +159,7 @@ export type Database = {
       }
       products: {
         Row: {
+          backordered: boolean | null
           brand_id: string | null
           category_id: string | null
           created_at: string
@@ -167,6 +168,7 @@ export type Database = {
           featured: boolean | null
           id: string
           image: string | null
+          inventory: number | null
           name: string
           pack_unit_id: string | null
           package_quantity: number | null
@@ -177,6 +179,7 @@ export type Database = {
           weight: string | null
         }
         Insert: {
+          backordered?: boolean | null
           brand_id?: string | null
           category_id?: string | null
           created_at?: string
@@ -185,6 +188,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image?: string | null
+          inventory?: number | null
           name: string
           pack_unit_id?: string | null
           package_quantity?: number | null
@@ -195,6 +199,7 @@ export type Database = {
           weight?: string | null
         }
         Update: {
+          backordered?: boolean | null
           brand_id?: string | null
           category_id?: string | null
           created_at?: string
@@ -203,6 +208,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image?: string | null
+          inventory?: number | null
           name?: string
           pack_unit_id?: string | null
           package_quantity?: number | null

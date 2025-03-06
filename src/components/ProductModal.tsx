@@ -1,7 +1,8 @@
 
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
-import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { X, AlertTriangle } from "lucide-react";
 import { Product } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -12,6 +13,7 @@ import ProductBreadcrumb from "./product/ProductBreadcrumb";
 import ProductPriceCard from "./product/ProductPriceCard";
 import ProductDetails from "./product/ProductDetails";
 import ProductActions from "./product/ProductActions";
+import BackorderForm from "./product/BackorderForm";
 import { capitalize, calculatePricePerItem, getPackUnit } from "./product/utils";
 
 interface ProductModalProps {
@@ -59,6 +61,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               {/* Breadcrumb-style category hierarchy */}
               <ProductBreadcrumb categoryPath={product.categoryPath} />
               
+              {/* Backordered badge if applicable */}
+              {product.backordered && (
+                <Badge variant="destructive" className="mb-3 flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3" />
+                  <span>Backordered</span>
+                </Badge>
+              )}
+              
               <h2 className="text-2xl font-medium tracking-tight">{product.name}</h2>
               
               <p className="text-sm text-muted-foreground mb-4 mt-3">{product.description}</p>
@@ -69,15 +79,21 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                 packUnit={packUnit}
                 packageQuantity={product.packageQuantity}
                 pricePerItem={pricePerItem}
+                inventory={product.inventory}
+                backordered={product.backordered}
               />
             </div>
             
-            {/* Product Actions */}
-            <ProductActions 
-              quantity={quantity}
-              onQuantityChange={setQuantity}
-              onAddToCart={handleAddToCart}
-            />
+            {/* Product Actions or Backorder Form */}
+            {product.backordered ? (
+              <BackorderForm productName={product.name} />
+            ) : (
+              <ProductActions 
+                quantity={quantity}
+                onQuantityChange={setQuantity}
+                onAddToCart={handleAddToCart}
+              />
+            )}
             
             {/* Product Details Accordion */}
             <div className="mt-4">

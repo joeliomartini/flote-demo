@@ -7,13 +7,17 @@ interface ProductPriceCardProps {
   packUnit: string;
   packageQuantity?: number;
   pricePerItem: string | null;
+  inventory?: number;
+  backordered?: boolean;
 }
 
 const ProductPriceCard: React.FC<ProductPriceCardProps> = ({ 
   price, 
   packUnit, 
   packageQuantity, 
-  pricePerItem 
+  pricePerItem,
+  inventory,
+  backordered
 }) => {
   return (
     <Card className="mt-3 mb-4 bg-muted/30">
@@ -29,6 +33,15 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
           {packageQuantity && packageQuantity > 1 && (
             <div className="text-sm text-muted-foreground">
               Contains {packageQuantity} items at ${pricePerItem} per item
+            </div>
+          )}
+
+          {/* Inventory status */}
+          {!backordered && inventory !== undefined && inventory > 0 && (
+            <div className="text-sm text-emerald-600 font-medium mt-1">
+              {inventory < 5 
+                ? `Only ${inventory} left in stock!` 
+                : `${inventory} in stock`}
             </div>
           )}
         </div>

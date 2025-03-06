@@ -1,6 +1,8 @@
 
 import React from "react";
 import { Product } from "../data/products";
+import { Badge } from "@/components/ui/badge";
+import { AlertTriangle } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -21,13 +23,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           className="product-image animate-blur-in h-full w-full object-cover"
           loading="lazy"
         />
-        {product.featured && (
-          <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
+          {product.featured && (
             <span className="inline-flex items-center rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
               Featured
             </span>
-          </div>
-        )}
+          )}
+          {product.backordered && (
+            <Badge variant="destructive" className="flex items-center gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              <span>Backordered</span>
+            </Badge>
+          )}
+        </div>
       </div>
       
       <div className="space-y-1 pt-2">

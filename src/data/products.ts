@@ -25,6 +25,8 @@ export interface Product {
   pack_unit_id?: string;
   pack_unit?: string;
   categoryPath?: Array<{id: string, name: string}>;
+  backordered?: boolean;
+  inventory?: number;
 }
 
 export const products: Product[] = [

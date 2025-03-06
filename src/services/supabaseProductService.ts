@@ -23,7 +23,9 @@ export const getProducts = async (): Promise<Product[]> => {
       type,
       details,
       pack_unit_id,
-      pack_units:pack_unit_id(name)
+      pack_units:pack_unit_id(name),
+      backordered,
+      inventory
     `)
     .order('name');
 
@@ -69,7 +71,9 @@ export const getProducts = async (): Promise<Product[]> => {
       type: item.type,
       details: processedDetails,
       pack_unit_id: item.pack_unit_id,
-      pack_unit: packUnit
+      pack_unit: packUnit,
+      backordered: item.backordered || false,
+      inventory: item.inventory
     };
     return product;
   });
@@ -96,7 +100,9 @@ export const getProductById = async (id: string): Promise<Product | null> => {
       type,
       details,
       pack_unit_id,
-      pack_units:pack_unit_id(name)
+      pack_units:pack_unit_id(name),
+      backordered,
+      inventory
     `)
     .eq('id', id)
     .single();
@@ -144,7 +150,9 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     type: data.type,
     details: processedDetails,
     pack_unit_id: data.pack_unit_id,
-    pack_unit: packUnit
+    pack_unit: packUnit,
+    backordered: data.backordered || false,
+    inventory: data.inventory
   };
 
   return product;
