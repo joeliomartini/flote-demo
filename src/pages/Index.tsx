@@ -7,7 +7,7 @@ import CartTab from "../components/CartTab";
 import { CartProvider } from "../context/CartContext";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsWithCategories } from "@/services/supabaseProductService";
-import { getAllFlatCategories } from "@/services/categoryService";
+import { getCategories } from "@/services/categoryService";
 import ProductSearch from "@/components/ProductSearch";
 import CategoryFilter from "@/components/CategoryFilter";
 import ProductGrid from "@/components/ProductGrid";
@@ -19,9 +19,10 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+  // Get hierarchical categories instead of flat categories
   const { data: allCategories = [] } = useQuery({
-    queryKey: ['allCategories'],
-    queryFn: getAllFlatCategories
+    queryKey: ['categories'],
+    queryFn: getCategories
   });
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
@@ -64,12 +65,28 @@ const Index = () => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                            (product.description?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
       
-      const matchesCategory = selectedCategories.length === 0 || 
-                             selectedCategories.includes(product.category);
+      // Check if product matches any selected category or its subcategories
+      const matchesCategory = () => {
+        if (selectedCategories.length === 0) return true;
+        
+        // Check direct category match
+        if (selectedCategories.includes(product.category)) return true;
+        
+        // Find selected parent categories that have subcategories
+        for (const category of allCategories) {
+          if (selectedCategories.includes(category.name) && category.subcategories) {
+            // Check if product's category is a subcategory of this selected parent
+            const isSubcategory = category.subcategories.some(sub => sub.name === product.category);
+            if (isSubcategory) return true;
+          }
+        }
+        
+        return false;
+      };
       
-      return matchesSearch && matchesCategory;
+      return matchesSearch && matchesCategory();
     });
-  }, [searchQuery, selectedCategories, products]);
+  }, [searchQuery, selectedCategories, products, allCategories]);
 
   return (
     <CartProvider>
