@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { 
   Dialog,
@@ -144,8 +145,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
           </form>
         ) : (
           <form onSubmit={handleVerifyOTP} className="space-y-4">
-            <div className="flex flex-col items-center space-y-2">
-              <label htmlFor="otp" className="text-sm font-medium self-start">
+            <div className="flex flex-col items-start space-y-2">
+              <label htmlFor="otp" className="text-sm font-medium">
                 Verification code
               </label>
               <div className="w-full">
@@ -154,8 +155,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
                   value={otp} 
                   onChange={setOtp}
                   disabled={loading}
-                  className="w-full"
-                  containerClassName="w-full justify-center"
+                  containerClassName="justify-start"
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
