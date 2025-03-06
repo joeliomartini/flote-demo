@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
 import { X, ChevronRight } from "lucide-react";
@@ -44,6 +43,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
   const packUnit = product.pack_unit 
     ? product.pack_unit.toLowerCase()
     : (product.packageQuantity && product.packageQuantity > 1 ? 'case' : 'single');
+    
+  // Helper function to capitalize the first letter
+  const capitalize = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -147,7 +151,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         {product.pack_unit && (
                           <div className="flex gap-2">
                             <span className="font-medium">Pack Unit:</span>
-                            <span className="text-muted-foreground">{product.pack_unit.toLowerCase()}</span>
+                            <span className="text-muted-foreground">{capitalize(product.pack_unit)}</span>
                           </div>
                         )}
                         
