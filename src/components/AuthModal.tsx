@@ -36,12 +36,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
     setLoading(true);
 
     try {
-      // Explicitly use OTP authentication
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: window.location.origin,
-          // Force OTP flow
           shouldCreateUser: true
         },
       });
