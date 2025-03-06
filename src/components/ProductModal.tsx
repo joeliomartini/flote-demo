@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
 import { X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "../data/products";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface ProductModalProps {
   product: Product | null;
@@ -47,6 +48,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[850px] p-0 overflow-hidden">
+        <VisuallyHidden>
+          <DialogTitle>Product Details: {product.name}</DialogTitle>
+        </VisuallyHidden>
         <div className="flex flex-col lg:flex-row">
           {/* Product Image - White background */}
           <div className="w-full lg:w-1/2 bg-white flex items-center justify-center">
@@ -68,22 +72,22 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             
             <div className="flex-1 overflow-auto pr-2">
               {/* Breadcrumb-style category hierarchy */}
-              {(product.category || product.type) && (
+              {product.categoryPath && product.categoryPath.length > 0 && (
                 <div className="mb-3 flex items-center text-xs text-muted-foreground">
-                  {product.category && (
-                    <span className="font-medium">
-                      {product.category}
-                    </span>
-                  )}
-                  
-                  {product.category && product.type && product.type !== "Accessory" && (
-                    <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/70" />
-                  )}
+                  {product.categoryPath.map((cat, index) => (
+                    <React.Fragment key={cat.id}>
+                      <span className="font-medium">{cat.name}</span>
+                      {index < product.categoryPath!.length - 1 && (
+                        <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/70" />
+                      )}
+                    </React.Fragment>
+                  ))}
                   
                   {product.type && product.type !== "Accessory" && (
-                    <span className="font-medium">
-                      {product.type}
-                    </span>
+                    <>
+                      <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/70" />
+                      <span className="font-medium">{product.type}</span>
+                    </>
                   )}
                 </div>
               )}

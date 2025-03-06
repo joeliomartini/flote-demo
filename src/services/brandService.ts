@@ -68,19 +68,19 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
     return [];
   }
 
-  // Get categories to map category_id to names
+  // Get full category data to build category hierarchy
   const { data: categories, error: categoryError } = await supabase
     .from('categories')
-    .select('id, name');
+    .select('id, name, parent_id');
   
   if (categoryError) {
     console.error('Error fetching categories:', categoryError);
     return [];
   }
 
-  // Create a map of category ids to names
+  // Create a map of category ids to category data
   const categoryMap = new Map(
-    categories.map(category => [category.id, category.name])
+    categories.map(category => [category.id, category])
   );
 
   // Map the Supabase data to match our Product interface
@@ -104,16 +104,35 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
       packUnit = item.pack_units.name;
     }
 
+    // Build category path array
+    const categoryPath = [];
+    let currentCategoryId = item.category_id;
+    
+    // Build the category path from the current category up to root
+    while (currentCategoryId && categoryMap.has(currentCategoryId)) {
+      const category = categoryMap.get(currentCategoryId);
+      if (category) {
+        categoryPath.unshift({
+          id: category.id,
+          name: category.name
+        });
+        currentCategoryId = category.parent_id;
+      } else {
+        break;
+      }
+    }
+
     const product: Product = {
       id: item.id,
       name: item.name,
       description: item.description || "",
       price: Number(item.price),
       image: item.image || "https://images.pexels.com/photos/4068314/pexels-photo-4068314.jpeg?auto=compress&cs=tinysrgb&w=600",
-      category: item.category_id ? categoryMap.get(item.category_id) || "" : "",
+      category: item.category_id ? (categoryMap.get(item.category_id)?.name || "") : "",
       featured: item.featured || false,
       brand_id: item.brand_id,
       category_id: item.category_id,
+      categoryPath: categoryPath,
       thcContent: item.thc_content,
       weight: item.weight,
       packageQuantity: item.package_quantity,

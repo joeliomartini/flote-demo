@@ -160,21 +160,42 @@ export const getProductsWithCategories = async (): Promise<Product[]> => {
   // Get all categories for reference
   const { data: categories, error } = await supabase
     .from('categories')
-    .select('id, name');
+    .select('id, name, parent_id');
   
   if (error) {
     console.error('Error fetching categories:', error);
     return products;
   }
 
-  // Create a map of category ids to names
+  // Create a map of category ids to names and full category objects
   const categoryMap = new Map(
-    categories.map(category => [category.id, category.name])
+    categories.map(category => [category.id, category])
   );
 
-  // Add the category name to each product
-  return products.map(product => ({
-    ...product,
-    category: product.category_id ? categoryMap.get(product.category_id) || "" : ""
-  }));
+  // Add the category name to each product and build category path
+  return products.map(product => {
+    // Build category path array
+    const categoryPath = [];
+    let currentCategoryId = product.category_id;
+    
+    // Build the category path from the current category up to root
+    while (currentCategoryId && categoryMap.has(currentCategoryId)) {
+      const category = categoryMap.get(currentCategoryId);
+      if (category) {
+        categoryPath.unshift({
+          id: category.id,
+          name: category.name
+        });
+        currentCategoryId = category.parent_id;
+      } else {
+        break;
+      }
+    }
+
+    return {
+      ...product,
+      category: product.category_id ? (categoryMap.get(product.category_id)?.name || "") : "",
+      categoryPath: categoryPath
+    };
+  });
 };

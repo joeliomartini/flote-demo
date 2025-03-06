@@ -24,6 +24,7 @@ export interface Product {
   category_id?: string;
   pack_unit_id?: string;
   pack_unit?: string;
+  categoryPath?: Array<{id: string, name: string}>;
 }
 
 export const products: Product[] = [
