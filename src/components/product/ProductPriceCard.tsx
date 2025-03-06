@@ -19,8 +19,11 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
   inventory,
   backordered
 }) => {
+  const isOutOfStock = inventory === 0 || inventory === null;
+  const cardClassName = `mt-3 mb-4 shadow-sm ${(!isOutOfStock && !backordered) ? 'bg-white' : ''}`;
+
   return (
-    <Card className="mt-3 mb-4 shadow-sm">
+    <Card className={cardClassName}>
       <CardContent className="p-3">
         <div className="flex flex-col gap-1">
           {/* Price section with pack unit type */}
@@ -38,8 +41,8 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
 
           {/* Inventory status */}
           {!backordered && inventory !== undefined && (
-            <div className={`text-sm font-medium mt-1 ${inventory === 0 || inventory === null ? 'text-red-600' : 'text-emerald-600'}`}>
-              {inventory === 0 || inventory === null
+            <div className={`text-sm font-medium mt-1 ${isOutOfStock ? 'text-red-600' : 'text-emerald-600'}`}>
+              {isOutOfStock
                 ? 'Out of Stock' 
                 : inventory < 5 
                   ? `Only ${inventory} left in stock!` 
