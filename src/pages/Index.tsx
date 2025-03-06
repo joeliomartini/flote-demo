@@ -82,7 +82,7 @@ const Index = () => {
   }, [searchQuery, selectedCategories]);
 
   // Recursive function to render category with its subcategories
-  const renderCategory = (category: Category) => {
+  const renderCategory = (category: Category): React.ReactNode => {
     const isExpanded = expandedCategories.includes(category.id);
     const isSelected = selectedCategories.includes(category.name);
     const hasSubcategories = category.subcategories && category.subcategories.length > 0;
@@ -99,7 +99,7 @@ const Index = () => {
               {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
             </button>
           ) : (
-            <div className="w-5"></div> {/* Spacer for alignment */}
+            <div className="w-5"></div> /* Spacer for alignment */
           )}
           
           <Badge
