@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/data/products";
 import { handleSupabaseError, PRODUCT_SELECT_QUERY } from "./client";
+import { formatProductData } from "./productFormatters";
 
 /**
  * Fetches all products from the Supabase database
