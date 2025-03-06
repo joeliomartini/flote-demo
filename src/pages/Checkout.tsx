@@ -14,6 +14,7 @@ import { CameraModal } from "@/components/checkout/CameraModal";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { UserProfile, Address } from "@/types/checkout";
+import { getBrandById } from "@/services/brandService";
 
 const Checkout = () => {
   const { items, totalPrice } = useCart();
@@ -38,6 +39,8 @@ const Checkout = () => {
     }
   ]);
   const [cameraModalOpen, setCameraModalOpen] = useState(false);
+  const [brandLogo, setBrandLogo] = useState<string | null>(null);
+  const [brandName, setBrandName] = useState<string | null>(null);
 
   useEffect(() => {
     if (items.length === 0 && !bypassCartCheck) {
@@ -101,7 +104,36 @@ const Checkout = () => {
     };
 
     fetchUserProfile();
-  }, [items.length, navigate, bypassCartCheck]);
+
+    // Get brand info if there are items in the cart
+    const getBrandInfo = async () => {
+      if (items.length > 0) {
+        try {
+          // Get brand_id from the first product
+          const { data, error } = await supabase
+            .from('products')
+            .select('brand_id')
+            .eq('id', items[0].product.id)
+            .single();
+          
+          if (error || !data?.brand_id) {
+            console.error("Error fetching product brand:", error);
+            return;
+          }
+          
+          const brand = await getBrandById(data.brand_id);
+          if (brand) {
+            setBrandLogo(brand.logo);
+            setBrandName(brand.name);
+          }
+        } catch (error) {
+          console.error("Error fetching brand info:", error);
+        }
+      }
+    };
+
+    getBrandInfo();
+  }, [items, navigate, bypassCartCheck]);
 
   const handleAddNewAddress = (newAddress: Omit<Address, "id" | "isDefault">) => {
     const newAddr: Address = {
@@ -173,11 +205,30 @@ const Checkout = () => {
 
   return (
     <div className="bg-secondary/30 min-h-screen">
+      {brandLogo && (
+        <div className="bg-white py-4 border-b">
+          <div className="container max-w-7xl flex justify-center">
+            <div className="flex flex-col items-center">
+              <img 
+                src={brandLogo} 
+                alt={`${brandName} logo`} 
+                className="h-16 w-16 object-contain"
+              />
+              {brandName && (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Checkout powered by {brandName}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="container max-w-7xl py-6">
         <header className="mb-8">
           <div className="flex justify-between items-center">
             <button 
-              onClick={() => navigate("/")}
+              onClick={() => navigate(-1)}
               className="flex items-center text-sm font-medium hover:underline"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
