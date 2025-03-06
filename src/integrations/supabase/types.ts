@@ -133,6 +133,30 @@ export type Database = {
         }
         Relationships: []
       }
+      packaging_types: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           brand_id: string | null
@@ -145,6 +169,7 @@ export type Database = {
           image: string | null
           name: string
           package_quantity: number | null
+          packaging_type_id: string | null
           price: number
           thc_content: string | null
           type: string | null
@@ -162,6 +187,7 @@ export type Database = {
           image?: string | null
           name: string
           package_quantity?: number | null
+          packaging_type_id?: string | null
           price: number
           thc_content?: string | null
           type?: string | null
@@ -179,6 +205,7 @@ export type Database = {
           image?: string | null
           name?: string
           package_quantity?: number | null
+          packaging_type_id?: string | null
           price?: number
           thc_content?: string | null
           type?: string | null
@@ -198,6 +225,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_packaging_type_id_fkey"
+            columns: ["packaging_type_id"]
+            isOneToOne: false
+            referencedRelation: "packaging_types"
             referencedColumns: ["id"]
           },
         ]

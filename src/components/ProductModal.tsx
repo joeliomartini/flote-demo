@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { X, ChevronRight } from "lucide-react";
@@ -14,6 +13,7 @@ import {
   AccordionTrigger
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ProductModalProps {
   product: Product | null;
@@ -37,6 +37,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
   const pricePerItem = product.packageQuantity && product.packageQuantity > 1
     ? (product.price / product.packageQuantity).toFixed(2)
     : null;
+
+  // Get packaging type display name
+  const packagingType = product.packaging_type || (product.packageQuantity && product.packageQuantity > 1 ? 'Case' : 'Single');
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -65,7 +68,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               {(product.category || product.type) && (
                 <div className="mb-3 flex items-center text-xs text-muted-foreground">
                   {product.category && (
-                    <span className="font-medium bg-secondary/70 px-2 py-1 rounded">
+                    <span className="font-medium">
                       {product.category}
                     </span>
                   )}
@@ -75,7 +78,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   )}
                   
                   {product.type && product.type !== "Accessory" && (
-                    <span className="font-medium bg-secondary/70 px-2 py-1 rounded">
+                    <span className="font-medium">
                       {product.type}
                     </span>
                   )}
@@ -84,15 +87,26 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               
               <h2 className="text-2xl font-medium tracking-tight">{product.name}</h2>
               
-              {/* Price section with per item calculation */}
-              <div className="mt-2 mb-4">
-                <p className="text-2xl font-medium">${product.price.toFixed(2)}</p>
-                {pricePerItem && (
-                  <p className="text-sm text-muted-foreground">
-                    ${pricePerItem} per item
-                  </p>
-                )}
-              </div>
+              {/* Packaging info card */}
+              <Card className="mt-3 mb-4 bg-muted/30">
+                <CardContent className="p-3">
+                  <div className="flex flex-col gap-1">
+                    {/* Price section with packaging type */}
+                    <div className="flex items-baseline gap-2">
+                      <p className="text-2xl font-medium">${product.price.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">per {packagingType}</p>
+                    </div>
+                    
+                    {/* Package quantity and price per item */}
+                    {product.packageQuantity && product.packageQuantity > 1 && (
+                      <div className="text-sm text-muted-foreground">
+                        <span>Contains {product.packageQuantity} items • </span>
+                        <span className="font-medium">${pricePerItem} per item</span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
               
               <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
             </div>
@@ -131,6 +145,20 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                           </div>
                         )}
                         
+                        {product.packaging_type && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Packaging:</span>
+                            <span className="text-muted-foreground">{product.packaging_type}</span>
+                          </div>
+                        )}
+                        
+                        {product.packageQuantity && product.packageQuantity > 1 && (
+                          <div className="flex gap-2">
+                            <span className="font-medium">Items per {packagingType}:</span>
+                            <span className="text-muted-foreground">{product.packageQuantity}</span>
+                          </div>
+                        )}
+                        
                         {product.type && product.type !== "Accessory" && (
                           <div className="flex gap-2">
                             <span className="font-medium">Type:</span>
@@ -149,13 +177,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                           <div className="flex gap-2">
                             <span className="font-medium">Weight:</span>
                             <span className="text-muted-foreground">{product.weight}</span>
-                          </div>
-                        )}
-                        
-                        {product.packageQuantity && product.packageQuantity > 1 && (
-                          <div className="flex gap-2">
-                            <span className="font-medium">Package Quantity:</span>
-                            <span className="text-muted-foreground">{product.packageQuantity} items</span>
                           </div>
                         )}
                         

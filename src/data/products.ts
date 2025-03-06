@@ -22,6 +22,8 @@ export interface Product {
   updated_at?: string;
   brand_id?: string;
   category_id?: string;
+  packaging_type_id?: string;
+  packaging_type?: string;
 }
 
 export const products: Product[] = [

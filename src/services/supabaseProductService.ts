@@ -21,7 +21,9 @@ export const getProducts = async (): Promise<Product[]> => {
       weight,
       package_quantity,
       type,
-      details
+      details,
+      packaging_type_id,
+      packaging_types:packaging_type_id(name)
     `)
     .order('name');
 
@@ -45,6 +47,12 @@ export const getProducts = async (): Promise<Product[]> => {
       };
     }
 
+    // Extract packaging type name if available
+    let packagingType = null;
+    if (item.packaging_types && typeof item.packaging_types === 'object') {
+      packagingType = item.packaging_types.name;
+    }
+
     const product: Product = {
       id: item.id,
       name: item.name,
@@ -59,7 +67,9 @@ export const getProducts = async (): Promise<Product[]> => {
       weight: item.weight,
       packageQuantity: item.package_quantity,
       type: item.type,
-      details: processedDetails
+      details: processedDetails,
+      packaging_type_id: item.packaging_type_id,
+      packaging_type: packagingType
     };
     return product;
   });
@@ -84,7 +94,9 @@ export const getProductById = async (id: string): Promise<Product | null> => {
       weight,
       package_quantity,
       type,
-      details
+      details,
+      packaging_type_id,
+      packaging_types:packaging_type_id(name)
     `)
     .eq('id', id)
     .single();
@@ -109,6 +121,12 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     };
   }
 
+  // Extract packaging type name if available
+  let packagingType = null;
+  if (data.packaging_types && typeof data.packaging_types === 'object') {
+    packagingType = data.packaging_types.name;
+  }
+
   // Map the Supabase data to match our Product interface
   const product: Product = {
     id: data.id,
@@ -124,7 +142,9 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     weight: data.weight,
     packageQuantity: data.package_quantity,
     type: data.type,
-    details: processedDetails
+    details: processedDetails,
+    packaging_type_id: data.packaging_type_id,
+    packaging_type: packagingType
   };
 
   return product;
