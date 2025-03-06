@@ -20,7 +20,7 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
   backordered
 }) => {
   return (
-    <Card className="mt-3 mb-4 bg-muted/30">
+    <Card className="mt-3 mb-4 bg-white shadow-sm">
       <CardContent className="p-3">
         <div className="flex flex-col gap-1">
           {/* Price section with pack unit type */}
