@@ -7,7 +7,7 @@ import CartTab from "../components/CartTab";
 import { CartProvider } from "../context/CartContext";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsWithCategories } from "@/services/supabaseProductService";
-import { getCategories, Category } from "@/services/categoryService";
+import { getCategories, Category, getAllFlatCategories } from "@/services/categoryService";
 import ProductSearch from "@/components/ProductSearch";
 import CategoryFilter from "@/components/CategoryFilter";
 import ProductGrid from "@/components/ProductGrid";
@@ -19,15 +19,21 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const { data: allCategories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: getCategories
+  // Use getAllFlatCategories to get all categories without hierarchy
+  const { data: allCategories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ['categories-flat'],
+    queryFn: getAllFlatCategories
   });
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
     queryKey: ['products'],
     queryFn: getProductsWithCategories
   });
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Categories loaded:", allCategories);
+  }, [allCategories]);
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product);
@@ -60,15 +66,16 @@ const Index = () => {
 
   // Helper function to check if a category is a subcategory of a selected parent
   const isSubcategoryOfSelected = (categoryName: string, categories: Category[], selected: string[]): boolean => {
-    for (const cat of categories) {
-      if (cat.parent_id && cat.name === categoryName) {
-        // This is a subcategory, check if its parent is selected
-        const parentCategory = categories.find(p => p.id === cat.parent_id);
-        if (parentCategory && selected.includes(parentCategory.name)) {
-          return true;
-        }
+    const category = categories.find(c => c.name === categoryName);
+    if (!category) return false;
+    
+    if (category.parent_id) {
+      const parentCategory = categories.find(p => p.id === category.parent_id);
+      if (parentCategory && selected.includes(parentCategory.name)) {
+        return true;
       }
     }
+    
     return false;
   };
 
