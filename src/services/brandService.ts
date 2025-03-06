@@ -83,6 +83,19 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
 
   // Map the Supabase data to match our Product interface
   return products.map(item => {
+    // Safely handle the details field
+    let processedDetails = {};
+    if (item.details && typeof item.details === 'object' && !Array.isArray(item.details)) {
+      processedDetails = {
+        material: item.details.material as string | undefined,
+        dimensions: item.details.dimensions as string | undefined,
+        weight: item.details.weight as string | undefined,
+        color: Array.isArray(item.details.color) 
+          ? item.details.color as string[] 
+          : undefined
+      };
+    }
+
     const product: Product = {
       id: item.id,
       name: item.name,
@@ -97,7 +110,7 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
       weight: item.weight,
       packageQuantity: item.package_quantity,
       type: item.type,
-      details: typeof item.details === 'object' ? item.details : {}
+      details: processedDetails
     };
     return product;
   });

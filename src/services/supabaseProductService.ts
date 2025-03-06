@@ -32,6 +32,19 @@ export const getProducts = async (): Promise<Product[]> => {
 
   // Map the Supabase data to match our Product interface
   return data.map(item => {
+    // Safely handle the details field
+    let processedDetails = {};
+    if (item.details && typeof item.details === 'object' && !Array.isArray(item.details)) {
+      processedDetails = {
+        material: item.details.material as string | undefined,
+        dimensions: item.details.dimensions as string | undefined,
+        weight: item.details.weight as string | undefined,
+        color: Array.isArray(item.details.color) 
+          ? item.details.color as string[] 
+          : undefined
+      };
+    }
+
     const product: Product = {
       id: item.id,
       name: item.name,
@@ -46,7 +59,7 @@ export const getProducts = async (): Promise<Product[]> => {
       weight: item.weight,
       packageQuantity: item.package_quantity,
       type: item.type,
-      details: typeof item.details === 'object' ? item.details : {}
+      details: processedDetails
     };
     return product;
   });
@@ -83,6 +96,19 @@ export const getProductById = async (id: string): Promise<Product | null> => {
 
   if (!data) return null;
 
+  // Safely handle the details field
+  let processedDetails = {};
+  if (data.details && typeof data.details === 'object' && !Array.isArray(data.details)) {
+    processedDetails = {
+      material: data.details.material as string | undefined,
+      dimensions: data.details.dimensions as string | undefined,
+      weight: data.details.weight as string | undefined,
+      color: Array.isArray(data.details.color) 
+        ? data.details.color as string[] 
+        : undefined
+    };
+  }
+
   // Map the Supabase data to match our Product interface
   const product: Product = {
     id: data.id,
@@ -98,7 +124,7 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     weight: data.weight,
     packageQuantity: data.package_quantity,
     type: data.type,
-    details: typeof data.details === 'object' ? data.details : {}
+    details: processedDetails
   };
 
   return product;

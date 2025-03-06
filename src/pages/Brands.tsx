@@ -2,7 +2,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { getBrands } from "@/services/brandService";
+import { getAllBrands } from "@/services/brandService";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -10,9 +10,9 @@ import CartTab from "@/components/CartTab";
 import CartDrawer from "@/components/CartDrawer";
 
 const Brands = () => {
-  const { data: brands, isLoading, error } = useQuery({
+  const { data: brands = [], isLoading, error } = useQuery({
     queryKey: ['brands'],
-    queryFn: getBrands
+    queryFn: getAllBrands
   });
 
   return (
@@ -38,7 +38,7 @@ const Brands = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {brands?.map((brand) => (
+            {brands.map((brand: any) => (
               <Card key={brand.id} className="overflow-hidden flex flex-col">
                 <div className="aspect-square relative bg-secondary/30 flex items-center justify-center p-6">
                   <img 
