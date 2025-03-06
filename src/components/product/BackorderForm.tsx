@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Bell } from "lucide-react";
+import { AlertTriangle, Bell } from "lucide-react";
 import { toast } from "sonner";
 
 interface BackorderFormProps {
@@ -44,7 +44,7 @@ const BackorderForm: React.FC<BackorderFormProps> = ({ productName }) => {
     <div className="mt-4 p-4 border border-amber-200 bg-amber-50 rounded-md">
       <div>
         <h4 className="font-medium text-amber-800 flex items-center gap-1.5">
-          <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0" />
+          <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0" />
           This item is currently backordered
         </h4>
         <p className="text-sm text-amber-700 mt-1">
