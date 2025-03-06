@@ -71,7 +71,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </DialogClose>
             
             <div className="flex-1 overflow-auto pr-2">
-              {/* Breadcrumb-style category hierarchy */}
+              {/* Breadcrumb-style category hierarchy - without type */}
               {product.categoryPath && product.categoryPath.length > 0 && (
                 <div className="mb-3 flex items-center text-xs text-muted-foreground">
                   {product.categoryPath.map((cat, index) => (
@@ -82,13 +82,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                       )}
                     </React.Fragment>
                   ))}
-                  
-                  {product.type && product.type !== "Accessory" && (
-                    <>
-                      <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/70" />
-                      <span className="font-medium">{product.type}</span>
-                    </>
-                  )}
                 </div>
               )}
               
