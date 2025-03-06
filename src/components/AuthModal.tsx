@@ -47,7 +47,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
         options: {
           emailRedirectTo: window.location.origin,
           // Force OTP flow
-          shouldCreateUser: false
+          shouldCreateUser: true
         },
       });
 
@@ -83,7 +83,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
       const { error } = await supabase.auth.verifyOtp({
         email,
         token: otp,
-        type: 'magiclink'
+        type: 'email'
       });
 
       if (error) {
