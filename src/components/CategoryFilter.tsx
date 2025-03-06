@@ -72,18 +72,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         ))}
       </div>
       
-      {selectedCategories.length > 0 && (
-        <button 
-          onClick={resetFilters}
-          className="text-xs text-primary hover:underline"
-        >
-          Reset filters
-        </button>
-      )}
-      
       {selectedParentCategory && subcategories.length > 0 && (
         <div className="mt-3">
-          <h3 className="text-xs font-medium mb-2">{selectedParentCategory.name} subcategories:</h3>
+          <h3 className="text-xs font-medium mb-2">Subcategories:</h3>
           <div className="flex flex-wrap gap-2">
             {subcategories.map(subcategory => (
               <Badge
@@ -97,6 +88,15 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
             ))}
           </div>
         </div>
+      )}
+      
+      {selectedCategories.length > 0 && (
+        <button 
+          onClick={resetFilters}
+          className="text-xs text-primary hover:underline"
+        >
+          Reset filters
+        </button>
       )}
     </div>
   );
