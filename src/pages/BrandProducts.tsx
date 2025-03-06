@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getBrandById, getProductsByBrandId } from "@/services/brandService";
 import ProductCard from "@/components/ProductCard";
@@ -9,10 +9,8 @@ import CartDrawer from "@/components/CartDrawer";
 import CartTab from "@/components/CartTab";
 import { Product } from "@/data/products";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Search, X, ChevronLeft, ShoppingBag } from "lucide-react";
+import { Search, X, ShoppingBag } from "lucide-react";
 
 const BrandProducts = () => {
   const { brandId } = useParams<{ brandId: string }>();
@@ -76,9 +74,6 @@ const BrandProducts = () => {
           <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
           <h1 className="mt-4 text-2xl font-medium">Brand not found</h1>
           <p className="mt-2 text-muted-foreground">The brand you're looking for doesn't exist or has been removed.</p>
-          <Button asChild className="mt-6">
-            <Link to="/brands">View All Brands</Link>
-          </Button>
         </div>
       </div>
     );
@@ -105,12 +100,10 @@ const BrandProducts = () => {
 
       <div className="container max-w-7xl py-8">
         <header className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <Link to="/brands" className="flex items-center text-sm font-medium hover:underline">
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Back to all brands
-            </Link>
-          </div>
+          <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">{brand.name} Wholesale Catalogue</h1>
+          <p className="mt-2 text-lg text-muted-foreground">
+            Browse our collection of premium {brand.name} products
+          </p>
           
           <Separator className="my-6" />
 

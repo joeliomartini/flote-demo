@@ -1,6 +1,5 @@
 
 import React, { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Product, products } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
@@ -8,8 +7,7 @@ import CartDrawer from "../components/CartDrawer";
 import CartTab from "../components/CartTab";
 import { CartProvider } from "../context/CartContext";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, X, Store } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
@@ -64,21 +62,11 @@ const Index = () => {
     <CartProvider>
       <div className="min-h-screen bg-background px-4 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-7xl">
-          <header className="mb-10 flex flex-col sm:flex-row justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Product Catalogue</h1>
-              <p className="mt-2 text-lg text-muted-foreground">
-                Browse our collection of premium products
-              </p>
-            </div>
-            <div className="mt-4 sm:mt-0">
-              <Button asChild variant="outline" className="flex items-center gap-2">
-                <Link to="/brands">
-                  <Store className="h-4 w-4" />
-                  Shop by Brand
-                </Link>
-              </Button>
-            </div>
+          <header className="mb-10">
+            <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Product Catalogue</h1>
+            <p className="mt-2 text-lg text-muted-foreground">
+              Browse our collection of premium products
+            </p>
           </header>
 
           {/* Search and Filter Section */}

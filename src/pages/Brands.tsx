@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import CartTab from "@/components/CartTab";
 import CartDrawer from "@/components/CartDrawer";
-import { ChevronLeft } from "lucide-react";
 
 const Brands = () => {
   const { data: brands, isLoading, error } = useQuery({
@@ -20,12 +19,6 @@ const Brands = () => {
     <div className="min-h-screen bg-background">
       <div className="container max-w-7xl py-8">
         <header className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <Link to="/" className="flex items-center text-sm font-medium hover:underline">
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Back to main store
-            </Link>
-          </div>
           <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Featured Brands</h1>
           <p className="mt-2 text-lg text-muted-foreground">
             Explore our curated collection of premium cannabis brands
