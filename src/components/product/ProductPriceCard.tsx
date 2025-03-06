@@ -37,11 +37,13 @@ const ProductPriceCard: React.FC<ProductPriceCardProps> = ({
           )}
 
           {/* Inventory status */}
-          {!backordered && inventory !== undefined && inventory > 0 && (
-            <div className="text-sm text-emerald-600 font-medium mt-1">
-              {inventory < 5 
-                ? `Only ${inventory} left in stock!` 
-                : `${inventory} in stock`}
+          {!backordered && inventory !== undefined && (
+            <div className={`text-sm font-medium mt-1 ${inventory === 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+              {inventory === 0 
+                ? 'Out of Stock' 
+                : inventory < 5 
+                  ? `Only ${inventory} left in stock!` 
+                  : `${inventory} in stock`}
             </div>
           )}
         </div>
