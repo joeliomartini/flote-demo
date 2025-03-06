@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductModalProps {
   product: Product | null;
@@ -41,13 +42,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[850px] p-0 overflow-hidden">
         <div className="flex flex-col lg:flex-row">
-          {/* Product Image */}
-          <div className="w-full lg:w-1/2 bg-secondary/30">
+          {/* Product Image - White background */}
+          <div className="w-full lg:w-1/2 bg-white flex items-center justify-center">
             <div className="relative aspect-square w-full">
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-full object-cover animate-blur-in"
+                className="w-full h-full object-contain animate-blur-in"
               />
             </div>
           </div>
@@ -60,14 +61,16 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </DialogClose>
             
             <div className="flex-1 overflow-auto pr-2">
-              <div className="mb-2">
-                <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
-                  {product.category}
-                </span>
+              <div className="mb-2 flex flex-wrap gap-2">
+                {product.category && (
+                  <Badge variant="secondary" className="text-xs font-medium">
+                    {product.category}
+                  </Badge>
+                )}
                 {product.type && product.type !== "Accessory" && (
-                  <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                  <Badge variant="secondary" className="text-xs font-medium">
                     {product.type}
-                  </span>
+                  </Badge>
                 )}
               </div>
               
@@ -83,7 +86,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                 )}
               </div>
               
-              <p className="text-muted-foreground mb-4">{product.description}</p>
+              <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
             </div>
             
             <div className="space-y-4">
