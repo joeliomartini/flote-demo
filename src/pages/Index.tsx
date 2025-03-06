@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Product, products } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
@@ -7,19 +7,29 @@ import CartDrawer from "../components/CartDrawer";
 import CartTab from "../components/CartTab";
 import { CartProvider } from "../context/CartContext";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Search, X, ChevronDown, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Category, getCategories, getAllFlatCategories } from "@/services/categoryService";
+import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
-  // Get unique categories from local data
-  const categories = useMemo(() => {
-    return Array.from(new Set(products.map(product => product.category)));
-  }, []);
+  // Fetch hierarchical categories
+  const { data: hierarchicalCategories = [] } = useQuery({
+    queryKey: ['hierarchicalCategories'],
+    queryFn: getCategories
+  });
+
+  // Fetch all categories (flat structure) for filtering
+  const { data: allCategories = [] } = useQuery({
+    queryKey: ['allCategories'],
+    queryFn: getAllFlatCategories
+  });
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product);
@@ -32,11 +42,19 @@ const Index = () => {
     setTimeout(() => setSelectedProduct(null), 300);
   };
 
-  const toggleCategory = (category: string) => {
+  const toggleCategory = (categoryName: string) => {
     setSelectedCategories(prev => 
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
+      prev.includes(categoryName)
+        ? prev.filter(c => c !== categoryName)
+        : [...prev, categoryName]
+    );
+  };
+
+  const toggleExpandCategory = (categoryId: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(categoryId)
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
     );
   };
 
@@ -44,6 +62,11 @@ const Index = () => {
     setSearchQuery("");
     setSelectedCategories([]);
   };
+
+  // Get all category names including subcategories
+  const allCategoryNames = useMemo(() => {
+    return allCategories.map(category => category.name);
+  }, [allCategories]);
 
   // Filter products based on search query and selected categories
   const filteredProducts = useMemo(() => {
@@ -57,6 +80,45 @@ const Index = () => {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, selectedCategories]);
+
+  // Recursive function to render category with its subcategories
+  const renderCategory = (category: Category) => {
+    const isExpanded = expandedCategories.includes(category.id);
+    const isSelected = selectedCategories.includes(category.name);
+    const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+    
+    return (
+      <div key={category.id} className="space-y-1">
+        <div className="flex items-center">
+          {hasSubcategories ? (
+            <button 
+              onClick={() => toggleExpandCategory(category.id)}
+              className="mr-1 text-muted-foreground hover:text-foreground"
+              aria-label={isExpanded ? "Collapse category" : "Expand category"}
+            >
+              {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </button>
+          ) : (
+            <div className="w-5"></div> {/* Spacer for alignment */}
+          )}
+          
+          <Badge
+            variant={isSelected ? "default" : "outline"}
+            className="cursor-pointer"
+            onClick={() => toggleCategory(category.name)}
+          >
+            {category.name}
+          </Badge>
+        </div>
+        
+        {isExpanded && hasSubcategories && (
+          <div className="ml-6 space-y-1">
+            {category.subcategories?.map(subcategory => renderCategory(subcategory))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <CartProvider>
@@ -103,17 +165,8 @@ const Index = () => {
                   </button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <Badge
-                    key={category}
-                    variant={selectedCategories.includes(category) ? "default" : "outline"}
-                    className="cursor-pointer"
-                    onClick={() => toggleCategory(category)}
-                  >
-                    {category}
-                  </Badge>
-                ))}
+              <div className="space-y-1">
+                {hierarchicalCategories.map(category => renderCategory(category))}
               </div>
             </div>
           </div>
