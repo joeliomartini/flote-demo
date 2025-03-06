@@ -30,6 +30,16 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
       }
     }
     
+    // If no parent is directly selected, check if a subcategory is selected
+    // and if so, find its parent
+    const selectedSubcategory = allCategories.find(cat => 
+      cat.parent_id && selectedCategories.includes(cat.name)
+    );
+    
+    if (selectedSubcategory) {
+      return parentCategories.find(parent => parent.id === selectedSubcategory.parent_id) || null;
+    }
+    
     return null;
   }, [selectedCategories, allCategories]);
 
@@ -42,7 +52,6 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const subcategories = useMemo(() => {
     if (!selectedParentCategory) return [];
     
-    // Add console log to debug subcategories
     console.log("Selected parent:", selectedParentCategory);
     const subs = allCategories.filter(cat => cat.parent_id === selectedParentCategory.id);
     console.log("Found subcategories:", subs);

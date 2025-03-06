@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from "react";
 import { Product } from "../data/products";
 import ProductModal from "../components/ProductModal";
@@ -19,7 +18,6 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Use getAllFlatCategories to get all categories without hierarchy
   const { data: allCategories = [], isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories-flat'],
     queryFn: getAllFlatCategories
@@ -30,7 +28,6 @@ const Index = () => {
     queryFn: getProductsWithCategories
   });
 
-  // Debug logging
   useEffect(() => {
     console.log("Categories loaded:", allCategories);
   }, [allCategories]);
@@ -64,19 +61,26 @@ const Index = () => {
     return () => window.removeEventListener('resetFilters', handleResetFilters);
   }, []);
 
-  // Helper function to check if a category is a subcategory of a selected parent
-  const isSubcategoryOfSelected = (categoryName: string, categories: Category[], selected: string[]): boolean => {
+  const findSubcategories = (parentName: string, categories: Category[]): string[] => {
+    const parent = categories.find(c => c.name === parentName);
+    if (!parent) return [];
+    
+    return categories
+      .filter(c => c.parent_id === parent.id)
+      .map(c => c.name);
+  };
+
+  const isSubcategory = (categoryName: string, categories: Category[]): boolean => {
     const category = categories.find(c => c.name === categoryName);
-    if (!category) return false;
+    return category ? !!category.parent_id : false;
+  };
+
+  const getCategoryParent = (categoryName: string, categories: Category[]): string | null => {
+    const category = categories.find(c => c.name === categoryName);
+    if (!category || !category.parent_id) return null;
     
-    if (category.parent_id) {
-      const parentCategory = categories.find(p => p.id === category.parent_id);
-      if (parentCategory && selected.includes(parentCategory.name)) {
-        return true;
-      }
-    }
-    
-    return false;
+    const parent = categories.find(c => c.id === category.parent_id);
+    return parent ? parent.name : null;
   };
 
   const filteredProducts = useMemo(() => {
@@ -84,14 +88,19 @@ const Index = () => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                            (product.description?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
       
-      const matchesCategory = () => {
+      const matchesCategory = (): boolean => {
         if (selectedCategories.length === 0) return true;
         
-        // Direct match with selected category
         if (selectedCategories.includes(product.category)) return true;
         
-        // Check if product's category is a subcategory of any selected parent category
-        if (isSubcategoryOfSelected(product.category, allCategories, selectedCategories)) return true;
+        for (const selectedCategory of selectedCategories) {
+          if (!isSubcategory(selectedCategory, allCategories)) {
+            const subcategories = findSubcategories(selectedCategory, allCategories);
+            if (subcategories.includes(product.category)) return true;
+          } else {
+            if (product.category === selectedCategory) return true;
+          }
+        }
         
         return false;
       };
