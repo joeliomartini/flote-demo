@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
-import { X } from "lucide-react";
+import { X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "../data/products";
 import QuantityCounter from "./QuantityCounter";
@@ -61,18 +61,26 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </DialogClose>
             
             <div className="flex-1 overflow-auto pr-2">
-              <div className="mb-2 flex flex-wrap gap-2">
-                {product.category && (
-                  <Badge variant="secondary" className="text-xs font-medium">
-                    {product.category}
-                  </Badge>
-                )}
-                {product.type && product.type !== "Accessory" && (
-                  <Badge variant="secondary" className="text-xs font-medium">
-                    {product.type}
-                  </Badge>
-                )}
-              </div>
+              {/* Breadcrumb-style category hierarchy */}
+              {(product.category || product.type) && (
+                <div className="mb-3 flex items-center text-xs text-muted-foreground">
+                  {product.category && (
+                    <span className="font-medium bg-secondary/70 px-2 py-1 rounded">
+                      {product.category}
+                    </span>
+                  )}
+                  
+                  {product.category && product.type && product.type !== "Accessory" && (
+                    <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/70" />
+                  )}
+                  
+                  {product.type && product.type !== "Accessory" && (
+                    <span className="font-medium bg-secondary/70 px-2 py-1 rounded">
+                      {product.type}
+                    </span>
+                  )}
+                </div>
+              )}
               
               <h2 className="text-2xl font-medium tracking-tight">{product.name}</h2>
               
