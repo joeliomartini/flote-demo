@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import { Product } from "../data/products";
 import ProductModal from "../components/ProductModal";
@@ -6,7 +7,7 @@ import CartTab from "../components/CartTab";
 import { CartProvider } from "../context/CartContext";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsWithCategories } from "@/services/supabaseProductService";
-import { getCategories } from "@/services/categoryService";
+import { getCategories, Category } from "@/services/categoryService";
 import ProductSearch from "@/components/ProductSearch";
 import CategoryFilter from "@/components/CategoryFilter";
 import ProductGrid from "@/components/ProductGrid";
@@ -57,6 +58,20 @@ const Index = () => {
     return () => window.removeEventListener('resetFilters', handleResetFilters);
   }, []);
 
+  // Helper function to check if a category is a subcategory of a selected parent
+  const isSubcategoryOfSelected = (categoryName: string, categories: Category[], selected: string[]): boolean => {
+    for (const cat of categories) {
+      if (cat.parent_id && cat.name === categoryName) {
+        // This is a subcategory, check if its parent is selected
+        const parentCategory = categories.find(p => p.id === cat.parent_id);
+        if (parentCategory && selected.includes(parentCategory.name)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -65,17 +80,11 @@ const Index = () => {
       const matchesCategory = () => {
         if (selectedCategories.length === 0) return true;
         
+        // Direct match with selected category
         if (selectedCategories.includes(product.category)) return true;
         
-        for (const category of allCategories) {
-          if (selectedCategories.includes(category.name) && !category.parent_id) {
-            const matchingSubcategories = allCategories.filter(cat => 
-              cat.parent_id === category.id && cat.name === product.category
-            );
-            
-            if (matchingSubcategories.length > 0) return true;
-          }
-        }
+        // Check if product's category is a subcategory of any selected parent category
+        if (isSubcategoryOfSelected(product.category, allCategories, selectedCategories)) return true;
         
         return false;
       };

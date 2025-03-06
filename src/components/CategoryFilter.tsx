@@ -1,7 +1,6 @@
 
 import React, { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Category } from "@/services/categoryService";
 
 interface CategoryFilterProps {
@@ -34,29 +33,33 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
     return null;
   }, [selectedCategories, allCategories]);
 
-  // Determine which categories to display
-  const displayedCategories = useMemo(() => {
-    // If a parent category is selected, show its subcategories
-    if (selectedParentCategory) {
-      // Get all subcategories by finding categories with parent_id matching the selected parent
-      return allCategories.filter(cat => 
-        cat.parent_id === selectedParentCategory.id || cat.id === selectedParentCategory.id
-      );
-    }
-    // Otherwise, show only parent categories
+  // Get all parent categories
+  const parentCategories = useMemo(() => {
     return allCategories.filter(cat => !cat.parent_id);
+  }, [allCategories]);
+
+  // Get subcategories of selected parent (if any)
+  const subcategories = useMemo(() => {
+    if (!selectedParentCategory) return [];
+    return allCategories.filter(cat => cat.parent_id === selectedParentCategory.id);
   }, [selectedParentCategory, allCategories]);
 
   return (
     <div className="space-y-3">
-      <h2 className="text-sm font-medium">
-        {selectedParentCategory 
-          ? `Filter by ${selectedParentCategory.name} subcategories:` 
-          : "Filter by category:"}
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-medium">Filter by category:</h2>
+        {selectedCategories.length > 0 && (
+          <button 
+            onClick={resetFilters}
+            className="text-xs text-primary hover:underline"
+          >
+            Reset filters
+          </button>
+        )}
+      </div>
       
       <div className="flex flex-wrap gap-2">
-        {displayedCategories.map(category => (
+        {parentCategories.map(category => (
           <Badge
             key={category.id}
             variant={selectedCategories.includes(category.name) ? "default" : "outline"}
@@ -68,15 +71,22 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         ))}
       </div>
       
-      {selectedCategories.length > 0 && (
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={resetFilters}
-          className="mt-2 text-xs"
-        >
-          Reset filters
-        </Button>
+      {selectedParentCategory && subcategories.length > 0 && (
+        <div className="mt-3">
+          <h3 className="text-xs font-medium mb-2">{selectedParentCategory.name} subcategories:</h3>
+          <div className="flex flex-wrap gap-2">
+            {subcategories.map(subcategory => (
+              <Badge
+                key={subcategory.id}
+                variant={selectedCategories.includes(subcategory.name) ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => toggleCategory(subcategory.name)}
+              >
+                {subcategory.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
