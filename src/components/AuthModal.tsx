@@ -149,22 +149,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
               <label htmlFor="otp" className="text-sm font-medium self-start">
                 Verification code
               </label>
-              <div className="w-full flex justify-center">
+              <div className="w-full">
                 <InputOTP 
                   maxLength={6} 
                   value={otp} 
                   onChange={setOtp}
                   disabled={loading}
                   className="w-full"
-                  containerClassName="w-full justify-center gap-2 md:gap-3"
+                  containerClassName="w-full justify-between gap-2"
                 >
-                  <InputOTPGroup className="w-full">
-                    <InputOTPSlot index={0} className="w-full h-12" />
-                    <InputOTPSlot index={1} className="w-full h-12" />
-                    <InputOTPSlot index={2} className="w-full h-12" />
-                    <InputOTPSlot index={3} className="w-full h-12" />
-                    <InputOTPSlot index={4} className="w-full h-12" />
-                    <InputOTPSlot index={5} className="w-full h-12" />
+                  <InputOTPGroup className="w-full grid grid-cols-6 gap-2">
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
                   </InputOTPGroup>
                 </InputOTP>
               </div>
