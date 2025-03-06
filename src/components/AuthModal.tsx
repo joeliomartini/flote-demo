@@ -9,11 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot
-} from "@/components/ui/input-otp";
 import { toast } from "sonner";
 import { Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -145,28 +140,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
           </form>
         ) : (
           <form onSubmit={handleVerifyOTP} className="space-y-4">
-            <div className="flex flex-col items-start space-y-2">
+            <div className="space-y-2">
               <label htmlFor="otp" className="text-sm font-medium">
                 Verification code
               </label>
-              <div className="w-full">
-                <InputOTP 
-                  maxLength={6} 
-                  value={otp} 
-                  onChange={setOtp}
-                  disabled={loading}
-                  containerClassName="justify-start"
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
+              <Input
+                id="otp"
+                type="text"
+                placeholder="Enter 6-digit code"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                maxLength={6}
+                disabled={loading}
+                className="text-center text-lg tracking-widest"
+                required
+              />
             </div>
 
             <div className="flex flex-col gap-2">
