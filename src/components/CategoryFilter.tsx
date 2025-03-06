@@ -1,5 +1,5 @@
 
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Category } from "@/services/categoryService";
 
@@ -51,18 +51,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   // Get subcategories of selected parent (if any)
   const subcategories = useMemo(() => {
     if (!selectedParentCategory) return [];
-    
-    console.log("Selected parent:", selectedParentCategory);
-    const subs = allCategories.filter(cat => cat.parent_id === selectedParentCategory.id);
-    console.log("Found subcategories:", subs);
-    return subs;
+    return allCategories.filter(cat => cat.parent_id === selectedParentCategory.id);
   }, [selectedParentCategory, allCategories]);
-
-  // Debug logging
-  useEffect(() => {
-    console.log("All categories:", allCategories);
-    console.log("Current selected categories:", selectedCategories);
-  }, [allCategories, selectedCategories]);
 
   return (
     <div className="space-y-3">
