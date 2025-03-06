@@ -57,8 +57,8 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
       package_quantity,
       type,
       details,
-      packaging_type_id,
-      packaging_types:packaging_type_id(name)
+      pack_unit_id,
+      pack_units:pack_unit_id(name)
     `)
     .eq('brand_id', brandId)
     .order('name');
@@ -98,10 +98,10 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
       };
     }
 
-    // Extract packaging type name if available
-    let packagingType = null;
-    if (item.packaging_types && typeof item.packaging_types === 'object') {
-      packagingType = item.packaging_types.name;
+    // Extract pack unit name if available
+    let packUnit = null;
+    if (item.pack_units && typeof item.pack_units === 'object') {
+      packUnit = item.pack_units.name;
     }
 
     const product: Product = {
@@ -119,8 +119,8 @@ export const getProductsByBrandId = async (brandId: string): Promise<Product[]> 
       packageQuantity: item.package_quantity,
       type: item.type,
       details: processedDetails,
-      packaging_type_id: item.packaging_type_id,
-      packaging_type: packagingType
+      pack_unit_id: item.pack_unit_id,
+      pack_unit: packUnit
     };
     return product;
   });

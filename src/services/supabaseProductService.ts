@@ -22,8 +22,8 @@ export const getProducts = async (): Promise<Product[]> => {
       package_quantity,
       type,
       details,
-      packaging_type_id,
-      packaging_types:packaging_type_id(name)
+      pack_unit_id,
+      pack_units:pack_unit_id(name)
     `)
     .order('name');
 
@@ -47,10 +47,10 @@ export const getProducts = async (): Promise<Product[]> => {
       };
     }
 
-    // Extract packaging type name if available
-    let packagingType = null;
-    if (item.packaging_types && typeof item.packaging_types === 'object') {
-      packagingType = item.packaging_types.name;
+    // Extract pack unit name if available
+    let packUnit = null;
+    if (item.pack_units && typeof item.pack_units === 'object') {
+      packUnit = item.pack_units.name;
     }
 
     const product: Product = {
@@ -68,8 +68,8 @@ export const getProducts = async (): Promise<Product[]> => {
       packageQuantity: item.package_quantity,
       type: item.type,
       details: processedDetails,
-      packaging_type_id: item.packaging_type_id,
-      packaging_type: packagingType
+      pack_unit_id: item.pack_unit_id,
+      pack_unit: packUnit
     };
     return product;
   });
@@ -95,8 +95,8 @@ export const getProductById = async (id: string): Promise<Product | null> => {
       package_quantity,
       type,
       details,
-      packaging_type_id,
-      packaging_types:packaging_type_id(name)
+      pack_unit_id,
+      pack_units:pack_unit_id(name)
     `)
     .eq('id', id)
     .single();
@@ -121,10 +121,10 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     };
   }
 
-  // Extract packaging type name if available
-  let packagingType = null;
-  if (data.packaging_types && typeof data.packaging_types === 'object') {
-    packagingType = data.packaging_types.name;
+  // Extract pack unit name if available
+  let packUnit = null;
+  if (data.pack_units && typeof data.pack_units === 'object') {
+    packUnit = data.pack_units.name;
   }
 
   // Map the Supabase data to match our Product interface
@@ -143,8 +143,8 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     packageQuantity: data.package_quantity,
     type: data.type,
     details: processedDetails,
-    packaging_type_id: data.packaging_type_id,
-    packaging_type: packagingType
+    pack_unit_id: data.pack_unit_id,
+    pack_unit: packUnit
   };
 
   return product;

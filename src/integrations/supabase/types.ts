@@ -133,7 +133,7 @@ export type Database = {
         }
         Relationships: []
       }
-      packaging_types: {
+      pack_units: {
         Row: {
           created_at: string
           description: string | null
@@ -168,8 +168,8 @@ export type Database = {
           id: string
           image: string | null
           name: string
+          pack_unit_id: string | null
           package_quantity: number | null
-          packaging_type_id: string | null
           price: number
           thc_content: string | null
           type: string | null
@@ -186,8 +186,8 @@ export type Database = {
           id?: string
           image?: string | null
           name: string
+          pack_unit_id?: string | null
           package_quantity?: number | null
-          packaging_type_id?: string | null
           price: number
           thc_content?: string | null
           type?: string | null
@@ -204,8 +204,8 @@ export type Database = {
           id?: string
           image?: string | null
           name?: string
+          pack_unit_id?: string | null
           package_quantity?: number | null
-          packaging_type_id?: string | null
           price?: number
           thc_content?: string | null
           type?: string | null
@@ -228,10 +228,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "products_packaging_type_id_fkey"
-            columns: ["packaging_type_id"]
+            foreignKeyName: "products_pack_unit_id_fkey"
+            columns: ["pack_unit_id"]
             isOneToOne: false
-            referencedRelation: "packaging_types"
+            referencedRelation: "pack_units"
             referencedColumns: ["id"]
           },
         ]

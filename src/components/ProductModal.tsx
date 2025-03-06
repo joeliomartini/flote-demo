@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { X, ChevronRight } from "lucide-react";
@@ -38,8 +39,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
     ? (product.price / product.packageQuantity).toFixed(2)
     : null;
 
-  // Get packaging type display name
-  const packagingType = product.packaging_type || (product.packageQuantity && product.packageQuantity > 1 ? 'Case' : 'Single');
+  // Get pack unit display name (lowercase)
+  const packUnit = product.pack_unit 
+    ? product.pack_unit.toLowerCase()
+    : (product.packageQuantity && product.packageQuantity > 1 ? 'case' : 'single');
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -87,28 +90,27 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               
               <h2 className="text-2xl font-medium tracking-tight">{product.name}</h2>
               
+              <p className="text-sm text-muted-foreground mb-4 mt-3">{product.description}</p>
+              
               {/* Packaging info card */}
               <Card className="mt-3 mb-4 bg-muted/30">
                 <CardContent className="p-3">
                   <div className="flex flex-col gap-1">
-                    {/* Price section with packaging type */}
+                    {/* Price section with pack unit type */}
                     <div className="flex items-baseline gap-2">
                       <p className="text-2xl font-medium">${product.price.toFixed(2)}</p>
-                      <p className="text-sm text-muted-foreground">per {packagingType}</p>
+                      <p className="text-sm text-muted-foreground">per {packUnit}</p>
                     </div>
                     
                     {/* Package quantity and price per item */}
                     {product.packageQuantity && product.packageQuantity > 1 && (
                       <div className="text-sm text-muted-foreground">
-                        <span>Contains {product.packageQuantity} items • </span>
-                        <span className="font-medium">${pricePerItem} per item</span>
+                        Contains {product.packageQuantity} items at ${pricePerItem} per item
                       </div>
                     )}
                   </div>
                 </CardContent>
               </Card>
-              
-              <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
             </div>
             
             <div className="space-y-4">
@@ -145,16 +147,16 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                           </div>
                         )}
                         
-                        {product.packaging_type && (
+                        {product.pack_unit && (
                           <div className="flex gap-2">
-                            <span className="font-medium">Packaging:</span>
-                            <span className="text-muted-foreground">{product.packaging_type}</span>
+                            <span className="font-medium">Pack Unit:</span>
+                            <span className="text-muted-foreground">{product.pack_unit.toLowerCase()}</span>
                           </div>
                         )}
                         
                         {product.packageQuantity && product.packageQuantity > 1 && (
                           <div className="flex gap-2">
-                            <span className="font-medium">Items per {packagingType}:</span>
+                            <span className="font-medium">Items per {packUnit}:</span>
                             <span className="text-muted-foreground">{product.packageQuantity}</span>
                           </div>
                         )}
