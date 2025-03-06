@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from "react";
 import { Product, products } from "../data/products";
 import ProductCard from "../components/ProductCard";
@@ -19,13 +18,11 @@ const Index = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
-  // Fetch hierarchical categories
   const { data: hierarchicalCategories = [] } = useQuery({
     queryKey: ['hierarchicalCategories'],
     queryFn: getCategories
   });
 
-  // Fetch all categories (flat structure) for filtering
   const { data: allCategories = [] } = useQuery({
     queryKey: ['allCategories'],
     queryFn: getAllFlatCategories
@@ -38,7 +35,6 @@ const Index = () => {
 
   const closeProductModal = () => {
     setIsModalOpen(false);
-    // Small delay before resetting product to allow for exit animations
     setTimeout(() => setSelectedProduct(null), 300);
   };
 
@@ -63,12 +59,10 @@ const Index = () => {
     setSelectedCategories([]);
   };
 
-  // Get all category names including subcategories
   const allCategoryNames = useMemo(() => {
     return allCategories.map(category => category.name);
   }, [allCategories]);
 
-  // Filter products based on search query and selected categories
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -81,7 +75,6 @@ const Index = () => {
     });
   }, [searchQuery, selectedCategories]);
 
-  // Recursive function to render category with its subcategories
   const renderCategory = (category: Category): React.ReactNode => {
     const isExpanded = expandedCategories.includes(category.id);
     const isSelected = selectedCategories.includes(category.name);
@@ -131,7 +124,6 @@ const Index = () => {
             </p>
           </header>
 
-          {/* Search and Filter Section */}
           <div className="mb-8 space-y-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -153,8 +145,8 @@ const Index = () => {
               )}
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2">
                 <h2 className="text-sm font-medium">Filter by category:</h2>
                 {selectedCategories.length > 0 && (
                   <button 
@@ -165,13 +157,21 @@ const Index = () => {
                   </button>
                 )}
               </div>
-              <div className="space-y-1">
-                {hierarchicalCategories.map(category => renderCategory(category))}
+              <div className="flex flex-wrap gap-2">
+                {allCategories.map(category => (
+                  <Badge
+                    key={category.id}
+                    variant={selectedCategories.includes(category.name) ? "default" : "outline"}
+                    className="cursor-pointer"
+                    onClick={() => toggleCategory(category.name)}
+                  >
+                    {category.name}
+                  </Badge>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Results count */}
           <div className="mb-6">
             <p className="text-sm text-muted-foreground">
               Showing {filteredProducts.length} of {products.length} products
@@ -202,14 +202,12 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Product Modal */}
       <ProductModal
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={closeProductModal}
       />
 
-      {/* Cart Components */}
       <CartDrawer />
       <CartTab />
     </CartProvider>
