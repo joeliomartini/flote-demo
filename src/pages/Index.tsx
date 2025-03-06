@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import { Product } from "../data/products";
 import ProductModal from "../components/ProductModal";
@@ -85,20 +86,37 @@ const Index = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
+      // First check if product matches search query
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                            (product.description?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
       
+      // Then check if product matches selected categories
       const matchesCategory = (): boolean => {
+        // If no categories selected, show all products
         if (selectedCategories.length === 0) return true;
         
+        // Check if the product's exact category is in selected categories
         if (selectedCategories.includes(product.category)) return true;
         
+        // For each selected category, check the proper filtering logic
         for (const selectedCategory of selectedCategories) {
-          if (!isSubcategory(selectedCategory, allCategories)) {
-            const subcategories = findSubcategories(selectedCategory, allCategories);
-            if (subcategories.includes(product.category)) return true;
-          } else {
+          // If it's a subcategory (like "Beverages")
+          if (isSubcategory(selectedCategory, allCategories)) {
+            // Only match products that have this exact subcategory
             if (product.category === selectedCategory) return true;
+          } else {
+            // It's a parent category (like "Edibles")
+            // Check if product's category is this parent or any of its subcategories
+            if (product.category === selectedCategory) return true;
+            
+            // Get all subcategories of this parent
+            const subcategories = findSubcategories(selectedCategory, allCategories);
+            
+            // If the product has this subcategory, show it (but only if the specific subcategory isn't selected)
+            if (subcategories.includes(product.category) && 
+                !subcategories.some(sub => selectedCategories.includes(sub))) {
+              return true;
+            }
           }
         }
         
