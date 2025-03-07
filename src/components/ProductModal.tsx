@@ -41,11 +41,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[850px] p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[850px] p-0 overflow-hidden max-h-[90vh]">
         <VisuallyHidden>
           <DialogTitle>Product Details: {product.name}</DialogTitle>
         </VisuallyHidden>
-        <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col lg:flex-row max-h-[90vh] overflow-hidden">
           {/* Product Image - White background */}
           <ProductImageSection image={product.image} name={product.name} />
 
@@ -56,7 +56,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               <span className="sr-only">Close</span>
             </DialogClose>
             
-            <div className="flex-1 pr-2">
+            <div className="flex-1">
               {/* Breadcrumb-style category hierarchy */}
               <ProductBreadcrumb categoryPath={product.categoryPath} />
               
@@ -76,7 +76,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </div>
             
             {/* Product Actions or Backorder Form */}
-            <div className="mt-2">
+            <div className="mt-2 mb-4">
               {product.backordered ? (
                 <BackorderForm productName={product.name} />
               ) : (
@@ -89,7 +89,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </div>
             
             {/* Product Details Accordion */}
-            <div className="mt-4">
+            <div className="mb-6">
               <ProductDetails product={product} capitalize={capitalize} />
             </div>
           </div>
