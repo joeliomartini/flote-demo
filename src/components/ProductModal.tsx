@@ -56,7 +56,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
               <span className="sr-only">Close</span>
             </DialogClose>
             
-            <div className="flex-1 overflow-auto pr-2">
+            <div className="flex-1 overflow-auto pr-2 pb-4">
               {/* Breadcrumb-style category hierarchy */}
               <ProductBreadcrumb categoryPath={product.categoryPath} />
               
