@@ -76,7 +76,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
             </div>
             
             {/* Product Actions or Backorder Form */}
-            <div className="mt-0">
+            <div className="mt-2">
               {product.backordered ? (
                 <BackorderForm productName={product.name} />
               ) : (
